@@ -9,7 +9,7 @@ public class CharController : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float runningSpeed = 5f;
     [SerializeField] private float snappingForce = 5f;
-    [SerializeField] private float laneDistance = 4.5f;
+    [SerializeField] private float laneDistance = 3f;
 
 
     [Header("References")]
