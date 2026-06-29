@@ -1,8 +1,10 @@
 using UnityEngine;
-using UnityEngine.Pool;
+
 
 public class Track : MonoBehaviour
 {
+
+    [SerializeField] public Transform[] spawnPoints;
    public void OnDespawn()
     {
         gameObject.SetActive(false);
