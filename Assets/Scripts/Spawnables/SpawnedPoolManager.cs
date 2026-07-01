@@ -4,10 +4,15 @@ using System.Collections.Generic;
 
 public class SpawnedPoolManager : MonoBehaviour
 {
-    [SerializeField]private SpawnedItem itemPrefab;
+    
+
+    [Header("Spawn Settings")]
     [SerializeField]private int maxSize=100;
     [SerializeField]private int defaultCap=30;
     [SerializeField]private float objSpawnChance=0.5f;
+
+    [Header("References")]
+    [SerializeField]private SpawnedItem itemPrefab;
 
     private IObjectPool<SpawnedItem> objectPool;
     private Dictionary<Track , List<SpawnedItem>> _trackItems=new Dictionary<Track, List<SpawnedItem>>();

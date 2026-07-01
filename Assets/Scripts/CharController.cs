@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -20,6 +21,7 @@ public class CharController : MonoBehaviour
     private CharacterController _controller;
     private Lane _currentLane = Lane.middle;
     private float _lateralVelocity;
+    private Queue<StatusEffect> _effectsHold=new Queue<StatusEffect>();
 
     private enum Lane
     {
@@ -31,6 +33,7 @@ public class CharController : MonoBehaviour
     void Awake()
     {
         _controller = GetComponent<CharacterController>();
+
     }
 
     void OnEnable()
@@ -76,9 +79,9 @@ public class CharController : MonoBehaviour
     void Update()
     {
 
-        Debug.Log(_currentLane);
         CalculateLaneVelocity();
         ApplyMovement();
+        HandleEffects();
     }
 
     private void CalculateLaneVelocity()
@@ -92,5 +95,18 @@ public class CharController : MonoBehaviour
     {
         Vector3 moveVector = new Vector3(_lateralVelocity, 0f, runningSpeed);
         _controller.Move(moveVector * Time.unscaledDeltaTime);
+    }
+
+    public void AddEffect(StatusEffect effect)
+    {
+        _effectsHold.Enqueue(effect);
+    }
+
+    private void HandleEffects()
+    {
+        if (_effectsHold.Count == 0)
+        {
+            return;
+        }
     }
 }
