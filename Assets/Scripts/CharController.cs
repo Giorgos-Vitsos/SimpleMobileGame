@@ -124,10 +124,10 @@ public class CharController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Obstacle"))
+        /*if (other.CompareTag("Obstacle"))
         {
             Debug.Log("CRASH! Game Over.");   
-            Time.timeScale = 0f;
+            //Time.timeScale = 0f;
         }else if (other.CompareTag("PowerUp"))
         {
             IPowerUps item=other.GetComponent<IPowerUps>();
@@ -136,6 +136,6 @@ public class CharController : MonoBehaviour
                 item.ApplyEffect(this);
                 other.gameObject.SetActive(false);
             }
-        }
+        }*/
     }
 }

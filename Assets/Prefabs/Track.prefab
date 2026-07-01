@@ -368,6 +368,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e35d02e25bb10d74aada9a6441dd06de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Track
+  itemPrefab: {fileID: 0}
   spawnPoints:
   - {fileID: 708883422030310496}
   - {fileID: 5706065005139356861}
