@@ -22,6 +22,7 @@ public class CharController : MonoBehaviour
     private Lane _currentLane = Lane.middle;
     private float _lateralVelocity;
     private Queue<StatusEffect> _effectsHold=new Queue<StatusEffect>();
+    private StatusEffect _activeEffect=null;
 
     private enum Lane
     {
@@ -94,7 +95,7 @@ public class CharController : MonoBehaviour
     private void ApplyMovement()
     {
         Vector3 moveVector = new Vector3(_lateralVelocity, 0f, runningSpeed);
-        _controller.Move(moveVector * Time.unscaledDeltaTime);
+        _controller.Move(moveVector * Time.deltaTime);
     }
 
     public void AddEffect(StatusEffect effect)
@@ -104,9 +105,37 @@ public class CharController : MonoBehaviour
 
     private void HandleEffects()
     {
-        if (_effectsHold.Count == 0)
+        if (_activeEffect == null)
         {
-            return;
+            if (_effectsHold.Count == 0)
+            {
+                return;
+            }
+            _activeEffect=_effectsHold.Dequeue();
+            _activeEffect.OnApplyEffect(this);
+        }
+        _activeEffect.remainingTime-=Time.deltaTime;
+        if (_activeEffect.remainingTime <= 0)
+        {
+            _activeEffect.OnRemoveEffect(this);
+            _activeEffect=null;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Obstacle"))
+        {
+            Debug.Log("CRASH! Game Over.");   
+            Time.timeScale = 0f;
+        }else if (other.CompareTag("PowerUp"))
+        {
+            IPowerUps item=other.GetComponent<IPowerUps>();
+            if(item != null)
+            {
+                item.ApplyEffect(this);
+                other.gameObject.SetActive(false);
+            }
         }
     }
 }

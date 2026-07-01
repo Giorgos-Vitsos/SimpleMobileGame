@@ -10,4 +10,5 @@ public class PowerShield : MonoBehaviour,IPowerUps
         ShieldEffect Paylod=new ShieldEffect(shieldDuration);
         player.AddEffect(Paylod);
     }
+
 }
