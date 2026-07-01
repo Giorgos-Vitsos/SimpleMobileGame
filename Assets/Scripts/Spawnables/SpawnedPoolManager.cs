@@ -4,21 +4,34 @@ using System.Collections.Generic;
 
 public class SpawnedPoolManager : MonoBehaviour
 {
-    
 
     [Header("Spawn Settings")]
-    [SerializeField]private int maxSize=100;
-    [SerializeField]private int defaultCap=30;
-    [SerializeField]private float objSpawnChance=0.5f;
+    [SerializeField] private int maxSize = 100;
+    [SerializeField] private int defaultCap = 30;
+    [SerializeField] private float powerUpChance = 0.1f;
 
     [Header("References")]
-    [SerializeField]private SpawnedItem itemPrefab;
+    [SerializeField] private SpawnedItem[] itemPrefabs;
 
-    private IObjectPool<SpawnedItem> objectPool;
-    private Dictionary<Track , List<SpawnedItem>> _trackItems=new Dictionary<Track, List<SpawnedItem>>();
+    private Dictionary<Track, List<SpawnedItem>> _trackItems = new();
+    private Dictionary<SpawnedItem, IObjectPool<SpawnedItem>> _objectPools = new();
+    private List<SpawnedItem> _obstaclePrefabs = new();
+    private List<SpawnedItem> _powerUpPrefabs = new();
+
     private void Awake()
     {
-        objectPool=new ObjectPool<SpawnedItem>(createItem,OnGet,OnRelease,OnDestroyItem,false,defaultCap,maxSize);
+        foreach (var prefab in itemPrefabs)
+        {
+            _objectPools[prefab] = new ObjectPool<SpawnedItem>(() => createItem(prefab), OnGet, OnRelease, OnDestroyItem, false, defaultCap, maxSize);
+            if (prefab.Type == SpawnedItem.ItemType.Obstacle)
+            {
+                _obstaclePrefabs.Add(prefab);
+            }
+            else if (prefab.Type == SpawnedItem.ItemType.Powerup)
+            {
+                _powerUpPrefabs.Add(prefab);
+            }
+        }
     }
 
     private void OnDestroyItem(SpawnedItem item)
@@ -36,37 +49,71 @@ public class SpawnedPoolManager : MonoBehaviour
         item.OnSpawn();
     }
 
-    private SpawnedItem createItem()
+    private SpawnedItem createItem(SpawnedItem prefab)
     {
-        return Instantiate(itemPrefab);
+        SpawnedItem item = Instantiate(prefab);
+        item.PrefabSource = prefab;
+        item.OnDespawn();
+        return item;
     }
 
     public void Populate(Track track)
     {
-        var spawned=0;
-        List<SpawnedItem> currItems=new List<SpawnedItem>();
-        List<Transform> points=new List<Transform>(track.spawnPoints);
+        var obstacleCount = 0;
+        var powerUpCount = 0;
+        List<SpawnedItem> currItems = new List<SpawnedItem>();
+        List<Transform> points = new List<Transform>(track.spawnPoints);
         ShuffleUtility.Shuffle(points);
-        foreach(Transform point in points)
+
+        foreach (Transform point in points)
         {
-            if (Random.value <= objSpawnChance && spawned<2)
+
+            SpawnedItem itemToSpawn = null;
+
+            if (Random.value > powerUpChance && obstacleCount < 2)
             {
-                SpawnedItem newItem=objectPool.Get();
-                newItem.transform.position=point.position;
-                currItems.Add(newItem);
-                spawned++;
+                itemToSpawn = GetRandItem(SpawnedItem.ItemType.Obstacle);
+                if (itemToSpawn != null)
+                {
+                    obstacleCount++;
+                }
+
             }
+            else if (Random.value <= powerUpChance && powerUpCount < 1)
+            {
+                itemToSpawn = GetRandItem(SpawnedItem.ItemType.Powerup);
+                if (itemToSpawn != null)
+                {
+                    powerUpCount++;
+                }
+            }
+            if (itemToSpawn == null)
+            {
+                continue;
+            }
+            SpawnedItem newItem=_objectPools[itemToSpawn].Get();
+            newItem.transform.position=point.position;
+            currItems.Add(newItem);
         }
-        _trackItems.Add(track,currItems);
+        _trackItems.Add(track, currItems);
     }
 
+    private SpawnedItem GetRandItem(SpawnedItem.ItemType itemType)
+    {
+        List<SpawnedItem> candidates= (itemType==SpawnedItem.ItemType.Obstacle)?_obstaclePrefabs:_powerUpPrefabs;
+        if (candidates.Count == 0)
+        {
+            return null;
+        }
+        return candidates[Random.Range(0,candidates.Count)];
+    }
     public void ClearItems(Track track)
     {
         if (_trackItems.ContainsKey(track))
         {
-            foreach(SpawnedItem item in _trackItems[track])
+            foreach (var item in _trackItems[track])
             {
-                objectPool.Release(item);
+                _objectPools[item.PrefabSource].Release(item);
             }
             _trackItems.Remove(track);
         }

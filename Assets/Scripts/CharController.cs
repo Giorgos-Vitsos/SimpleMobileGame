@@ -124,7 +124,7 @@ public class CharController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        /*if (other.CompareTag("Obstacle"))
+        if (other.CompareTag("Obstacle"))
         {
             Debug.Log("CRASH! Game Over.");   
             //Time.timeScale = 0f;
@@ -136,6 +136,6 @@ public class CharController : MonoBehaviour
                 item.ApplyEffect(this);
                 other.gameObject.SetActive(false);
             }
-        }*/
+        }
     }
 }

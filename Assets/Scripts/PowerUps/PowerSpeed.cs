@@ -1,16 +1,11 @@
 using UnityEngine;
 
-public class PowerSpeed : MonoBehaviour
+public class PowerSpeed : MonoBehaviour,IPowerUps
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private float effectDuration=20f;
+    public void ApplyEffect(CharController player)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        SpeedEffect Paylod=new(effectDuration);
+        player.AddEffect(Paylod);
     }
 }

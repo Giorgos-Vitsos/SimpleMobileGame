@@ -1,16 +1,12 @@
 using UnityEngine;
 
-public class PowerSlowMo : MonoBehaviour
+public class PowerSlowMo : MonoBehaviour,IPowerUps
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    [SerializeField] private float effectDuration=10f;
+    public void ApplyEffect(CharController player)
     {
-        
+        SlowMoEffect Paylod=new(effectDuration);
+        player.AddEffect(Paylod);
     }
 }

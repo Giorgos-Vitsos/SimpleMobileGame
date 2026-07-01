@@ -63,5 +63,25 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2295734536333808551, guid: 894233e677646d9478d58b886e918309, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7841119306701695600}
   m_SourcePrefab: {fileID: 100100000, guid: 894233e677646d9478d58b886e918309, type: 3}
+--- !u!1 &7445349233058531499 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2295734536333808551, guid: 894233e677646d9478d58b886e918309, type: 3}
+  m_PrefabInstance: {fileID: 8687205962977352460}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7841119306701695600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7445349233058531499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7b5dca2f3a401b48bde848720fc7c4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PowerSlowMo
