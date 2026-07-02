@@ -27,6 +27,7 @@ public class CharController : MonoBehaviour
     private StatusEffect _activeEffect = null;
     private float _currentSpeed;
     private int _score=0;
+    private bool _isDead=false;
 
     private enum Lane
     {
@@ -84,7 +85,10 @@ public class CharController : MonoBehaviour
 
     void Update()
     {
-
+        if (_isDead)
+        {
+            return;
+        }
         CalculateLaneVelocity();
         ApplyMovement();
         //UpDifficulty();
@@ -100,6 +104,7 @@ public class CharController : MonoBehaviour
 
     private void ApplyMovement()
     {
+        
         var forwoard=_currentSpeed*Time.deltaTime;
         var dodge=_lateralVelocity*Time.unscaledDeltaTime;
         Vector3 moveVector = new(dodge, 0f, forwoard);
@@ -162,8 +167,7 @@ public class CharController : MonoBehaviour
                 return;
 
             }
-            Debug.Log("CRASH! Game Over.");
-            //Time.timeScale = 0f;
+            PlayerGameOver();
         }
         else if (other.CompareTag("PowerUp"))
         {
@@ -174,6 +178,12 @@ public class CharController : MonoBehaviour
                 other.gameObject.SetActive(false);
             }
         }
+    }
+
+    private void PlayerGameOver()
+    {
+        _isDead=true;
+        Time.timeScale = 0f;
     }
 
     public void ChangeInvincibility(bool state)

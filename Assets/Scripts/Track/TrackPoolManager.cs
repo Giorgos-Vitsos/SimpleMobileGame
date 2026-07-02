@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Pool;
 using System.Collections.Generic;
+using NUnit.Framework;
 public class TrackPoolManager : MonoBehaviour
 {
 
@@ -29,17 +30,23 @@ public class TrackPoolManager : MonoBehaviour
     {
         for (int i = 0; i < defaultCap; i++)
         {
-            SpawnNextTrack();
+            SpawnNextTrack(true);
         }
     }
 
-    private void SpawnNextTrack()
+    
+
+    private void SpawnNextTrack(bool isInitial)
     {
         Track newTrack = _trackPool.Get();
         newTrack.transform.position = new Vector3(0, 0, _spawnPos);
         _spawnPos += TrackLength;
         _activeTracks.Enqueue(newTrack);
-        itemManager.Populate(newTrack);
+        if (!isInitial)
+        {
+            itemManager.Populate(newTrack);
+        }
+        
     }
 
     private void OnDestroyTrack(Track track)
@@ -77,7 +84,7 @@ public class TrackPoolManager : MonoBehaviour
             _trackPool.Release(oldestTrack);
             player.UpScore();
             
-            SpawnNextTrack();
+            SpawnNextTrack(false);
         }
 
     }
