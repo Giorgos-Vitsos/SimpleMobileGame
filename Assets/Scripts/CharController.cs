@@ -21,7 +21,7 @@ public class CharController : MonoBehaviour
     private CharacterController _controller;
     private Lane _currentLane = Lane.middle;
     private float _lateralVelocity;
-    private Queue<StatusEffect> _effectQueue = new Queue<StatusEffect>();
+    private Queue<StatusEffect> _effectQueue = new();
     private StatusEffect _activeEffect = null;
     private float _currentSpeed;
 
@@ -95,7 +95,7 @@ public class CharController : MonoBehaviour
 
     private void ApplyMovement()
     {
-        Vector3 moveVector = new Vector3(_lateralVelocity, 0f, baseSpeed);
+        Vector3 moveVector = new(_lateralVelocity, 0f, baseSpeed);
         _controller.Move(moveVector * Time.deltaTime);
     }
 

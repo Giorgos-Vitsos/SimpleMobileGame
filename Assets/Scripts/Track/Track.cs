@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Track : MonoBehaviour
 {
-    [Header("Spawn Locations")]
+    [Header("Spawn Points Settings")]
     [SerializeField]private SpawnedItem itemPrefab;
     [SerializeField] public Transform[] spawnPoints;
    public void OnDespawn()

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class SpawnedItem : MonoBehaviour
 {
+    [Header("Item type")]
     [SerializeField] private ItemType type;
     public enum ItemType { Obstacle, Powerup }
 

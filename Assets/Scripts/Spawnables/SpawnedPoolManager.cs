@@ -6,8 +6,8 @@ public class SpawnedPoolManager : MonoBehaviour
 {
 
     [Header("Spawn Settings")]
-    [SerializeField] private int maxSize = 100;
-    [SerializeField] private int defaultCap = 30;
+    [SerializeField] private int maxSize = 50;
+    [SerializeField] private int defaultCap = 5;
     [SerializeField] private float powerUpChance = 0.1f;
 
     [Header("References")]
@@ -61,8 +61,8 @@ public class SpawnedPoolManager : MonoBehaviour
     {
         var obstacleCount = 0;
         var powerUpCount = 0;
-        List<SpawnedItem> currItems = new List<SpawnedItem>();
-        List<Transform> points = new List<Transform>(track.spawnPoints);
+        List<SpawnedItem> currItems = new();
+        List<Transform> points = new(track.spawnPoints);
         ShuffleUtility.Shuffle(points);
 
         foreach (Transform point in points)

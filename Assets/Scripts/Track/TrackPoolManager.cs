@@ -17,7 +17,7 @@ public class TrackPoolManager : MonoBehaviour
     [SerializeField] private SpawnedPoolManager itemManager;
 
     private IObjectPool<Track> _trackPool;
-    private Queue<Track> _activeTracks = new Queue<Track>();
+    private Queue<Track> _activeTracks = new();
     private float _spawnPos = 0;
 
     private void Awake()
