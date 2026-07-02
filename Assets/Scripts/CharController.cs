@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 public class CharController : MonoBehaviour
 {
     [Header("Movement")]
-    [SerializeField] private float runningSpeed = 5f;
+    [SerializeField] private float baseSpeed = 5f;
     [SerializeField] private float snappingForce = 5f;
     [SerializeField] private float laneDistance = 3f;
 
@@ -17,12 +17,13 @@ public class CharController : MonoBehaviour
     [SerializeField] private InputActionReference moveLeftAction;
     [SerializeField] private InputActionReference moveRightAction;
 
-
+    private bool _isInvincible=false;
     private CharacterController _controller;
     private Lane _currentLane = Lane.middle;
     private float _lateralVelocity;
-    private Queue<StatusEffect> _effectsHold=new Queue<StatusEffect>();
-    private StatusEffect _activeEffect=null;
+    private Queue<StatusEffect> _effectQueue = new Queue<StatusEffect>();
+    private StatusEffect _activeEffect = null;
+    private float _currentSpeed;
 
     private enum Lane
     {
@@ -59,7 +60,7 @@ public class CharController : MonoBehaviour
                 _currentLane = Lane.middle;
                 break;
             case Lane.middle:
-                _currentLane=Lane.right;
+                _currentLane = Lane.right;
                 break;
         }
     }
@@ -72,7 +73,7 @@ public class CharController : MonoBehaviour
                 _currentLane = Lane.middle;
                 break;
             case Lane.middle:
-                _currentLane=Lane.left;
+                _currentLane = Lane.left;
                 break;
         }
     }
@@ -94,31 +95,31 @@ public class CharController : MonoBehaviour
 
     private void ApplyMovement()
     {
-        Vector3 moveVector = new Vector3(_lateralVelocity, 0f, runningSpeed);
+        Vector3 moveVector = new Vector3(_lateralVelocity, 0f, baseSpeed);
         _controller.Move(moveVector * Time.deltaTime);
     }
 
     public void AddEffect(StatusEffect effect)
     {
-        _effectsHold.Enqueue(effect);
+        _effectQueue.Enqueue(effect);
     }
 
     private void HandleEffects()
     {
         if (_activeEffect == null)
         {
-            if (_effectsHold.Count == 0)
+            if (_effectQueue.Count == 0)
             {
                 return;
             }
-            _activeEffect=_effectsHold.Dequeue();
+            _activeEffect = _effectQueue.Dequeue();
             _activeEffect.OnApplyEffect(this);
         }
-        _activeEffect.remainingTime-=Time.deltaTime;
+        _activeEffect.remainingTime -= Time.deltaTime;
         if (_activeEffect.remainingTime <= 0)
         {
             _activeEffect.OnRemoveEffect(this);
-            _activeEffect=null;
+            _activeEffect = null;
         }
     }
 
@@ -126,16 +127,19 @@ public class CharController : MonoBehaviour
     {
         if (other.CompareTag("Obstacle"))
         {
-            Debug.Log("CRASH! Game Over.");   
+            Debug.Log("CRASH! Game Over.");
             //Time.timeScale = 0f;
-        }else if (other.CompareTag("PowerUp"))
+        }
+        else if (other.CompareTag("PowerUp"))
         {
-            IPowerUps item=other.GetComponent<IPowerUps>();
-            if(item != null)
+            IPowerUps item = other.GetComponent<IPowerUps>();
+            if (item != null)
             {
                 item.ApplyEffect(this);
                 other.gameObject.SetActive(false);
             }
         }
     }
+
+
 }

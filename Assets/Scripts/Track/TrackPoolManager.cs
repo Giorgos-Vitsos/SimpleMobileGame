@@ -55,7 +55,7 @@ public class TrackPoolManager : MonoBehaviour
 
     private Track createTrack()
     {
-        return Instantiate(trackPrefab); 
+        return Instantiate(trackPrefab);
     }
 
     private void OnGet(Track track)

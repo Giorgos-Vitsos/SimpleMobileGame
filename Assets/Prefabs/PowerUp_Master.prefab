@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3103931522325074451}
   m_Layer: 0
   m_Name: PowerUp_Master
-  m_TagString: Untagged
+  m_TagString: PowerUp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -49,7 +49,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -67,6 +67,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be71956588d92aa47a2e930ada1264f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnedItem
+  type: 1
 --- !u!1001 &2751101416227615136
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -81,7 +82,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 96dc35486c47df84796f4e46cbc04e17, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.034835786
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 96dc35486c47df84796f4e46cbc04e17, type: 3}
       propertyPath: m_LocalPosition.z

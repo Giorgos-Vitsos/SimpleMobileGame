@@ -7,8 +7,8 @@ public abstract class StatusEffect
 
     protected StatusEffect(float time)
     {
-        duration=time;
-        remainingTime=time;
+        duration = time;
+        remainingTime = time;
     }
     public abstract void OnApplyEffect(CharController player);
     public abstract void OnRemoveEffect(CharController player);
@@ -16,11 +16,11 @@ public abstract class StatusEffect
 
 public class ShieldEffect : StatusEffect
 {
-    public ShieldEffect(float time):base(time){}
-    
+    public ShieldEffect(float time) : base(time) { }
+
     public override void OnApplyEffect(CharController player)
     {
-        Debug.Log($"Shield is on for {duration}");
+        
     }
 
     public override void OnRemoveEffect(CharController player)
@@ -31,7 +31,7 @@ public class ShieldEffect : StatusEffect
 
 public class SlowMoEffect : StatusEffect
 {
-    public SlowMoEffect(float time):base(time){}
+    public SlowMoEffect(float time) : base(time) { }
 
     public override void OnApplyEffect(CharController player)
     {
@@ -46,7 +46,7 @@ public class SlowMoEffect : StatusEffect
 
 public class SpeedEffect : StatusEffect
 {
-    public SpeedEffect(float time):base(time){}
+    public SpeedEffect(float time) : base(time) { }
 
     public override void OnApplyEffect(CharController player)
     {

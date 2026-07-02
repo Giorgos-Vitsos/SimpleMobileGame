@@ -91,8 +91,8 @@ public class SpawnedPoolManager : MonoBehaviour
             {
                 continue;
             }
-            SpawnedItem newItem=_objectPools[itemToSpawn].Get();
-            newItem.transform.position=point.position;
+            SpawnedItem newItem = _objectPools[itemToSpawn].Get();
+            newItem.transform.position = point.position;
             currItems.Add(newItem);
         }
         _trackItems.Add(track, currItems);
@@ -100,12 +100,12 @@ public class SpawnedPoolManager : MonoBehaviour
 
     private SpawnedItem GetRandItem(SpawnedItem.ItemType itemType)
     {
-        List<SpawnedItem> candidates= (itemType==SpawnedItem.ItemType.Obstacle)?_obstaclePrefabs:_powerUpPrefabs;
+        List<SpawnedItem> candidates = (itemType == SpawnedItem.ItemType.Obstacle) ? _obstaclePrefabs : _powerUpPrefabs;
         if (candidates.Count == 0)
         {
             return null;
         }
-        return candidates[Random.Range(0,candidates.Count)];
+        return candidates[Random.Range(0, candidates.Count)];
     }
     public void ClearItems(Track track)
     {
