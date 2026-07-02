@@ -16,6 +16,8 @@ public class CharController : MonoBehaviour
     [Header("References")]
     [SerializeField] private InputActionReference moveLeftAction;
     [SerializeField] private InputActionReference moveRightAction;
+    [SerializeField] private Fade _deathScreenFader;
+    [SerializeField] private CanvasGroup _deathScreenCanvasGroup;
 
     [SerializeField] private float difficultyMultiplier=1.2f;
 
@@ -184,6 +186,15 @@ public class CharController : MonoBehaviour
     {
         _isDead=true;
         Time.timeScale = 0f;
+        if (_deathScreenCanvasGroup != null)
+        {
+            _deathScreenCanvasGroup.interactable = true;
+            _deathScreenCanvasGroup.blocksRaycasts = true;
+        }
+        if (_deathScreenFader != null)
+        {
+            _deathScreenFader.TriggerFade(Fade.FadeType.In);
+        }
     }
 
     public void ChangeInvincibility(bool state)
