@@ -17,6 +17,8 @@ public class CharController : MonoBehaviour
     [SerializeField] private InputActionReference moveLeftAction;
     [SerializeField] private InputActionReference moveRightAction;
 
+    [SerializeField] private float difficultyMultiplier=1.2f;
+
     private bool _isInvincible=false;
     private CharacterController _controller;
     private Lane _currentLane = Lane.middle;
@@ -24,6 +26,7 @@ public class CharController : MonoBehaviour
     private Queue<StatusEffect> _effectQueue = new();
     private StatusEffect _activeEffect = null;
     private float _currentSpeed;
+    private int _score=0;
 
     private enum Lane
     {
@@ -34,6 +37,7 @@ public class CharController : MonoBehaviour
 
     void Awake()
     {
+        _currentSpeed=baseSpeed;
         _controller = GetComponent<CharacterController>();
 
     }
@@ -83,6 +87,7 @@ public class CharController : MonoBehaviour
 
         CalculateLaneVelocity();
         ApplyMovement();
+        //UpDifficulty();
         HandleEffects();
     }
 
@@ -95,8 +100,10 @@ public class CharController : MonoBehaviour
 
     private void ApplyMovement()
     {
-        Vector3 moveVector = new(_lateralVelocity, 0f, baseSpeed);
-        _controller.Move(moveVector * Time.deltaTime);
+        var forwoard=_currentSpeed*Time.deltaTime;
+        var dodge=_lateralVelocity*Time.unscaledDeltaTime;
+        Vector3 moveVector = new(dodge, 0f, forwoard);
+        _controller.Move(moveVector);
     }
 
     public void AddEffect(StatusEffect effect)
@@ -127,6 +134,12 @@ public class CharController : MonoBehaviour
     {
         if (other.CompareTag("Obstacle"))
         {
+            if (_isInvincible)
+            {
+                other.gameObject.SetActive(false);
+                return;
+
+            }
             Debug.Log("CRASH! Game Over.");
             //Time.timeScale = 0f;
         }
@@ -139,6 +152,34 @@ public class CharController : MonoBehaviour
                 other.gameObject.SetActive(false);
             }
         }
+    }
+
+    public void ChangeInvincibility(bool state)
+    {
+        _isInvincible=state;
+    }
+
+    public void ChangeSpeed(float speed)
+    {
+        _currentSpeed+=speed;
+    }
+
+    private void UpDifficulty()
+    {
+        if (_score % 10 == 0 && _score!=0)
+        {
+            _currentSpeed*=difficultyMultiplier;
+        }
+    }
+
+    public void UpScore()
+    {
+        _score++;
+    }
+
+    public int GetScore()
+    {
+        return _score;
     }
 
 

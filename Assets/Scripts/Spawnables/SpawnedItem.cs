@@ -6,6 +6,7 @@ public class SpawnedItem : MonoBehaviour
     [Header("Item type")]
     [SerializeField] private ItemType type;
     public enum ItemType { Obstacle, Powerup }
+    public SpawnedItem PrefabSource;
 
     public ItemType Type => type;
     public void OnSpawn()
@@ -18,6 +19,6 @@ public class SpawnedItem : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public SpawnedItem PrefabSource { get; set; }
+    
 
 }

@@ -13,7 +13,7 @@ public class TrackPoolManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Track trackPrefab;
-    [SerializeField] private Transform playerTran;
+    [SerializeField] private CharController player;
     [SerializeField] private SpawnedPoolManager itemManager;
 
     private IObjectPool<Track> _trackPool;
@@ -70,11 +70,13 @@ public class TrackPoolManager : MonoBehaviour
             return;
         }
         Track oldestTrack = _activeTracks.Peek();
-        if (oldestTrack.transform.position.z + TrackLength < playerTran.position.z)
+        if (oldestTrack.transform.position.z + TrackLength < player.transform.position.z)
         {
             itemManager.ClearItems(oldestTrack);
             _activeTracks.Dequeue();
             _trackPool.Release(oldestTrack);
+            player.UpScore();
+            
             SpawnNextTrack();
         }
 

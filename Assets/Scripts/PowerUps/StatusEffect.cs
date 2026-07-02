@@ -20,41 +20,50 @@ public class ShieldEffect : StatusEffect
 
     public override void OnApplyEffect(CharController player)
     {
-        
+        player.ChangeInvincibility(true);
     }
 
     public override void OnRemoveEffect(CharController player)
     {
-        Debug.Log($"ShieldIsOff");
+        player.ChangeInvincibility(false);
     }
 }
 
 public class SlowMoEffect : StatusEffect
 {
-    public SlowMoEffect(float time) : base(time) { }
+    private float _slowDownTarget;
+    public SlowMoEffect(float time,float slowDownTarget) : base(time)
+    {
+        _slowDownTarget=slowDownTarget;
+    }
 
     public override void OnApplyEffect(CharController player)
     {
-        Debug.Log($"SlowMo is on for {duration}");
+        Time.timeScale=_slowDownTarget;
+
     }
 
     public override void OnRemoveEffect(CharController player)
     {
-        Debug.Log($"SlowMo is off");
+        Time.timeScale=1f;
     }
 }
 
 public class SpeedEffect : StatusEffect
 {
-    public SpeedEffect(float time) : base(time) { }
+    private float _speed;
+    public SpeedEffect(float time,float speed) : base(time)
+    {
+        _speed=speed;
+    }
 
     public override void OnApplyEffect(CharController player)
     {
-        Debug.Log($"Speed is on for {duration}");
+        player.ChangeSpeed(_speed);
     }
 
     public override void OnRemoveEffect(CharController player)
     {
-        Debug.Log($"Speed is off");
+        player.ChangeSpeed(-_speed);
     }
 }

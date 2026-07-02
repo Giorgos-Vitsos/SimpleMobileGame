@@ -10,6 +10,10 @@ public class SpawnedPoolManager : MonoBehaviour
     [SerializeField] private int defaultCap = 5;
     [SerializeField] private float powerUpChance = 0.1f;
 
+    [Header("Difficulty Limits")]
+    [SerializeField] private int maxObstaclesPerTrack = 5;
+    [SerializeField] private int maxPowerUpsPerTrack = 1;
+
     [Header("References")]
     [SerializeField] private SpawnedItem[] itemPrefabs;
 
@@ -17,6 +21,7 @@ public class SpawnedPoolManager : MonoBehaviour
     private Dictionary<SpawnedItem, IObjectPool<SpawnedItem>> _objectPools = new();
     private List<SpawnedItem> _obstaclePrefabs = new();
     private List<SpawnedItem> _powerUpPrefabs = new();
+
 
     private void Awake()
     {

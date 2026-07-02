@@ -86,3 +86,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerSlowMo
   effectDuration: 10
+  slowDownTarget: 0.5

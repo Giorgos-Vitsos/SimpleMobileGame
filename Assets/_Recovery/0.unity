@@ -628,11 +628,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf300c9db6c9d0c4598eaadeceecbe7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharController
-  runningSpeed: 5
+  baseSpeed: 5
   snappingForce: 5
   laneDistance: 3
   moveLeftAction: {fileID: 7659427021830189970, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   moveRightAction: {fileID: 1525303862400676826, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  difficultyMultiplier: 0.2
 --- !u!143 &1302102988
 CharacterController:
   m_ObjectHideFlags: 0
@@ -723,7 +724,7 @@ MonoBehaviour:
   defaultCap: 15
   maxSize: 100
   trackPrefab: {fileID: -3281049841384140623, guid: 0fbca6f193854a7408e620a1c38472b6, type: 3}
-  playerTran: {fileID: 1302102989}
+  player: {fileID: 1302102987}
   itemManager: {fileID: 843588484}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
