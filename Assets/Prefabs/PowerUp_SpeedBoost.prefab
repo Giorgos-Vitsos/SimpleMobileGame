@@ -85,4 +85,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 345128f0936d869439dcd2dd2b53b17e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerSpeed
-  effectDuration: 10
+  effectDuration: 5
+  speedChange: 3

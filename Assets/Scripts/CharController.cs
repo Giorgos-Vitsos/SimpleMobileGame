@@ -108,7 +108,31 @@ public class CharController : MonoBehaviour
 
     public void AddEffect(StatusEffect effect)
     {
-        _effectQueue.Enqueue(effect);
+        if (_activeEffect == null)
+        {
+            StartEffect(effect);
+        }
+        else
+        {
+            _effectQueue.Enqueue(effect);
+        }
+        
+    }
+
+    private void StartEffect(StatusEffect effect)
+    {
+        _activeEffect=effect;
+        _activeEffect.OnApplyEffect(this);
+    }
+
+    private void StopEffect()
+    {
+        if (_activeEffect == null)
+        {
+            return;
+        }
+        _activeEffect.OnRemoveEffect(this);
+        _activeEffect=null;
     }
 
     private void HandleEffects()
@@ -119,14 +143,12 @@ public class CharController : MonoBehaviour
             {
                 return;
             }
-            _activeEffect = _effectQueue.Dequeue();
-            _activeEffect.OnApplyEffect(this);
+            StartEffect(_effectQueue.Dequeue());
         }
-        _activeEffect.remainingTime -= Time.deltaTime;
+        _activeEffect.remainingTime -= Time.unscaledDeltaTime;
         if (_activeEffect.remainingTime <= 0)
         {
-            _activeEffect.OnRemoveEffect(this);
-            _activeEffect = null;
+            StopEffect();
         }
     }
 
@@ -181,6 +203,10 @@ public class CharController : MonoBehaviour
     {
         return _score;
     }
+
+    public StatusEffect ActiveEffect=>_activeEffect;
+    public StatusEffect NextEffect=>_effectQueue.Count>0?_effectQueue.Peek():null;
+
 
 
 }

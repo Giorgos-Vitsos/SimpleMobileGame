@@ -11,8 +11,7 @@ public class SpawnedPoolManager : MonoBehaviour
     [SerializeField] private float powerUpChance = 0.1f;
 
     [Header("Difficulty Limits")]
-    [SerializeField] private int maxObstaclesPerTrack = 5;
-    [SerializeField] private int maxPowerUpsPerTrack = 1;
+    [SerializeField] private int maxObstaclesPerTrack = 3;
 
     [Header("References")]
     [SerializeField] private SpawnedItem[] itemPrefabs;
@@ -22,9 +21,12 @@ public class SpawnedPoolManager : MonoBehaviour
     private List<SpawnedItem> _obstaclePrefabs = new();
     private List<SpawnedItem> _powerUpPrefabs = new();
 
+    private int _currMaxObstaclesPerTrack;
+
 
     private void Awake()
     {
+        _currMaxObstaclesPerTrack = maxObstaclesPerTrack;
         foreach (var prefab in itemPrefabs)
         {
             _objectPools[prefab] = new ObjectPool<SpawnedItem>(() => createItem(prefab), OnGet, OnRelease, OnDestroyItem, false, defaultCap, maxSize);
@@ -70,32 +72,42 @@ public class SpawnedPoolManager : MonoBehaviour
         List<Transform> points = new(track.spawnPoints);
         ShuffleUtility.Shuffle(points);
 
+        Dictionary<Transform, int> obstaclesPerRow = new();
         foreach (Transform point in points)
         {
 
             SpawnedItem itemToSpawn = null;
+            Transform rowParent = point.parent;
 
-            if (Random.value > powerUpChance && obstacleCount < 2)
+            if (!obstaclesPerRow.ContainsKey(rowParent))
             {
-                itemToSpawn = GetRandItem(SpawnedItem.ItemType.Obstacle);
-                if (itemToSpawn != null)
-                {
-                    obstacleCount++;
-                }
-
+                obstaclesPerRow[rowParent] = 0;
             }
-            else if (Random.value <= powerUpChance && powerUpCount < 1)
+
+            if (obstacleCount < _currMaxObstaclesPerTrack)
             {
-                itemToSpawn = GetRandItem(SpawnedItem.ItemType.Powerup);
-                if (itemToSpawn != null)
+                if (obstaclesPerRow[rowParent] < 2)
                 {
-                    powerUpCount++;
+                    itemToSpawn = GetRandItem(SpawnedItem.ItemType.Obstacle);
+                    if (itemToSpawn != null)
+                    {
+                        obstacleCount++;
+                        obstaclesPerRow[rowParent]++;
+                    }
                 }
             }
             if (itemToSpawn == null)
             {
-                continue;
+                if (powerUpCount < 1 && Random.value <= powerUpChance)
+                {
+                    itemToSpawn = GetRandItem(SpawnedItem.ItemType.Powerup);
+                }
+                else
+                {
+                    continue;
+                }
             }
+
             SpawnedItem newItem = _objectPools[itemToSpawn].Get();
             newItem.transform.position = point.position;
             currItems.Add(newItem);

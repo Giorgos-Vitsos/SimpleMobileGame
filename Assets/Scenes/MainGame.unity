@@ -432,6 +432,59 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &843588483
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 843588485}
+  - component: {fileID: 843588484}
+  m_Layer: 0
+  m_Name: ItemManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &843588484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 843588483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35158007131106d45bbba0a0e171b8eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnedPoolManager
+  maxSize: 30
+  defaultCap: 2
+  powerUpChance: 0.08
+  maxObstaclesPerTrack: 2
+  itemPrefabs:
+  - {fileID: 6222306597159166505, guid: 5161b4b074449f447ba722f6c662a95d, type: 3}
+  - {fileID: 2996528958639795058, guid: b0259b24db292bf45be3925916aab5fd, type: 3}
+  - {fileID: 6024767976588790047, guid: 92ce70fde6ca71440a95f6d3ba034160, type: 3}
+  - {fileID: 3695670658494331443, guid: 81b3d9fd19b1ad945ad83fc05eda0cd4, type: 3}
+--- !u!4 &843588485
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 843588483}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1088889220
 GameObject:
   m_ObjectHideFlags: 0
@@ -460,7 +513,7 @@ Transform:
   m_GameObject: {fileID: 1088889220}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -576,11 +629,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf300c9db6c9d0c4598eaadeceecbe7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharController
-  runningSpeed: 5
+  baseSpeed: 5
   snappingForce: 5
-  laneDistance: 4.5
+  laneDistance: 3
   moveLeftAction: {fileID: 7659427021830189970, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   moveRightAction: {fileID: 1525303862400676826, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  difficultyMultiplier: 1.2
 --- !u!143 &1302102988
 CharacterController:
   m_ObjectHideFlags: 0
@@ -615,7 +669,7 @@ Transform:
   m_GameObject: {fileID: 1302102986}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -632,6 +686,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1447812359}
+  - component: {fileID: 1447812360}
   m_Layer: 0
   m_Name: TrackManager
   m_TagString: Untagged
@@ -648,12 +703,30 @@ Transform:
   m_GameObject: {fileID: 1447812358}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.04073, y: 0.1732, z: -0.39793}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1447812360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1447812358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31c4a2b1e3ee59e42a4bb9da33743112, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrackPoolManager
+  TrackLength: 10
+  defaultCap: 15
+  maxSize: 100
+  trackPrefab: {fileID: -3281049841384140623, guid: 0fbca6f193854a7408e620a1c38472b6, type: 3}
+  player: {fileID: 1302102987}
+  itemManager: {fileID: 843588484}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -662,3 +735,4 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 1302102989}
   - {fileID: 1447812359}
+  - {fileID: 843588485}

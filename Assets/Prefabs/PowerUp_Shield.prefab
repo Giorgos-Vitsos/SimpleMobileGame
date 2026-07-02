@@ -85,4 +85,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3cd2b4e06bfb4e4486e37de63724a5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerShield
-  effectDuration: 10
+  effectDuration: 6

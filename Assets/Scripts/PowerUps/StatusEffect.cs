@@ -52,18 +52,24 @@ public class SlowMoEffect : StatusEffect
 public class SpeedEffect : StatusEffect
 {
     private float _speed;
+    private ShieldEffect _shield;
     public SpeedEffect(float time,float speed) : base(time)
     {
         _speed=speed;
+        _shield=new(time);
+
     }
 
     public override void OnApplyEffect(CharController player)
     {
         player.ChangeSpeed(_speed);
+        _shield.OnApplyEffect(player);
+        
     }
 
     public override void OnRemoveEffect(CharController player)
     {
         player.ChangeSpeed(-_speed);
+        _shield.OnRemoveEffect(player);
     }
 }
