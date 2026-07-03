@@ -87,3 +87,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PowerSpeed
   effectDuration: 5
   speedChange: 3
+  grantShield: 1

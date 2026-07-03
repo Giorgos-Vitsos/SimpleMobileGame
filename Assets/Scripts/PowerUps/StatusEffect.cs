@@ -70,4 +70,32 @@ public class SpeedEffect : StatusEffect
     {
         player.ModifySpeed(-_speed);
     }
+
+    
+}
+
+public class CombinedEffect : StatusEffect
+{
+    private StatusEffect[] _effects;
+
+    public CombinedEffect(float time, params StatusEffect[] effects) : base(time)
+    {
+        _effects = effects;
+    }
+
+    public override void OnApplyEffect(PlayerEffects player)
+    {
+        foreach (var effect in _effects)
+        {
+            effect.OnApplyEffect(player);
+        }
+    }
+
+    public override void OnRemoveEffect(PlayerEffects player)
+    {
+        foreach (var effect in _effects)
+        {
+            effect.OnRemoveEffect(player);
+        }
+    }
 }

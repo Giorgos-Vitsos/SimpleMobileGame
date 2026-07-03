@@ -27,7 +27,12 @@ public class TrackPoolManager : MonoBehaviour
 
     private void Start()
     {
-        for (int i = 0; i < defaultCap; i++) SpawnNextTrack(true);
+        var isInitial=true;
+        for (int i = 0; i < defaultCap; i++)
+        {
+            SpawnNextTrack(isInitial);
+            isInitial=false;
+        }
     }
 
     private void SpawnNextTrack(bool isInitial)

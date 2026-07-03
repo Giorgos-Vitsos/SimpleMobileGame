@@ -8,12 +8,15 @@ public class PowerSpeed : MonoBehaviour, IPowerUps
     [SerializeField] private bool grantShield = true;
     public void ApplyEffect(PlayerEffects player)
     {
-        SpeedEffect Paylod = new(effectDuration,speedChange);
-        player.AddEffect(Paylod);
+        SpeedEffect Paylod1 = new(effectDuration,speedChange);
+        ShieldEffect Paylod2 = new(effectDuration);
         if (grantShield)
         {
-            ShieldEffect Paylod2 = new(effectDuration);
-            player.AddEffect(Paylod2);
+            CombinedEffect Paylod=new(effectDuration,Paylod1,Paylod2);
+            player.AddEffect(Paylod);
+            return;
         }
+        player.AddEffect(Paylod1);
+
     }
 }
