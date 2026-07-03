@@ -1,5 +1,5 @@
 public interface IPowerUps 
 {
-    void ApplyEffect(CharController player);
+    void ApplyEffect(PlayerEffects player);
     
 }

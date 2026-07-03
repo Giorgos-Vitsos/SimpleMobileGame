@@ -10,22 +10,22 @@ public abstract class StatusEffect
         duration = time;
         remainingTime = time;
     }
-    public abstract void OnApplyEffect(CharController player);
-    public abstract void OnRemoveEffect(CharController player);
+    public abstract void OnApplyEffect(PlayerEffects player);
+    public abstract void OnRemoveEffect(PlayerEffects player);
 }
 
 public class ShieldEffect : StatusEffect
 {
     public ShieldEffect(float time) : base(time) { }
 
-    public override void OnApplyEffect(CharController player)
+    public override void OnApplyEffect(PlayerEffects player)
     {
-        player.ChangeInvincibility(true);
+        player.SetInvincibility(true);
     }
 
-    public override void OnRemoveEffect(CharController player)
+    public override void OnRemoveEffect(PlayerEffects player)
     {
-        player.ChangeInvincibility(false);
+        player.SetInvincibility(false);
     }
 }
 
@@ -37,13 +37,13 @@ public class SlowMoEffect : StatusEffect
         _slowDownTarget=slowDownTarget;
     }
 
-    public override void OnApplyEffect(CharController player)
+    public override void OnApplyEffect(PlayerEffects player)
     {
         Time.timeScale=_slowDownTarget;
 
     }
 
-    public override void OnRemoveEffect(CharController player)
+    public override void OnRemoveEffect(PlayerEffects player)
     {
         Time.timeScale=1f;
     }
@@ -60,16 +60,14 @@ public class SpeedEffect : StatusEffect
 
     }
 
-    public override void OnApplyEffect(CharController player)
+    public override void OnApplyEffect(PlayerEffects player)
     {
-        player.ChangeSpeed(_speed);
-        _shield.OnApplyEffect(player);
+        player.ModifySpeed(_speed);
         
     }
 
-    public override void OnRemoveEffect(CharController player)
+    public override void OnRemoveEffect(PlayerEffects player)
     {
-        player.ChangeSpeed(-_speed);
-        _shield.OnRemoveEffect(player);
+        player.ModifySpeed(-_speed);
     }
 }
