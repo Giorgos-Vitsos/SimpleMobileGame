@@ -1,5 +1,6 @@
 using UnityEngine;
-using TMPro; 
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -107,5 +108,21 @@ public class UIManager : MonoBehaviour
             _queueIcon.sprite = null;
             _queueIcon.color = new Color(1, 1, 1, 0);
         }
+    }
+
+    public void Click_PlayGame()
+    {
+        SceneManager.LoadScene("MainGame");
+    }
+
+    public void Click_Restart()
+    {
+        GameEvents.OnRestartRequest?.Invoke();
+    }
+
+    public void Click_Quit()
+    {
+        Debug.Log("Game is quitting!");
+        Application.Quit();
     }
 }

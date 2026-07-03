@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 public static class GameEvents
 {
@@ -8,4 +7,5 @@ public static class GameEvents
     public static Action<int> OnDifficultyIncreased;
     public static Action<int> OnScoreUpdated;
     public static Action<StatusEffect, StatusEffect> OnEffectsHUDUpdated;
+    public static Action OnRestartRequest;
 }

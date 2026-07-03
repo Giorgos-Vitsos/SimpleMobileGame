@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,12 +19,14 @@ public class GameManager : MonoBehaviour
     {
         GameEvents.OnPlayerDeath += HandleGameOver;
         GameEvents.OnTrackCleared += HandleTrackCleared;
+        GameEvents.OnRestartRequest+=ReloadGame;
     }
 
     private void OnDisable()
     {
         GameEvents.OnPlayerDeath -= HandleGameOver;
         GameEvents.OnTrackCleared -= HandleTrackCleared;
+        GameEvents.OnRestartRequest-=ReloadGame;
     }
 
     private void HandleTrackCleared()
@@ -45,5 +48,11 @@ public class GameManager : MonoBehaviour
     private void HandleGameOver()
     {
         Time.timeScale = 0f;
+    }
+
+    private void ReloadGame()
+    {
+        Time.timeScale=1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
