@@ -1,12 +1,5 @@
 fileFormatVersion: 2
-guid: 36a75e11c9f6f4032a59f1c5e5203bc2
-AssetOrigin:
-  serializedVersion: 1
-  productId: 221375
-  packageName: Hyper-Casual Obstacle Pack
-  packageVersion: 1.0.0
-  assetPath: Assets/Models/barrier.fbx
-  uploadId: 526733
+guid: 7e6e5cdd97d4891479c8538a0af12700
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -14,8 +7,18 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: palette
-    second: {fileID: 2100000, guid: 4017902909a9b4d5895a29e6ab6f0c1a, type: 2}
+      name: Barrier
+    second: {fileID: 2100000, guid: ea3082fa4d3a09d43b14ec7a5c3c8046, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Base
+    second: {fileID: 2100000, guid: 874b9a2e665948d4bb77ee765c2213fa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Wood
+    second: {fileID: 2100000, guid: 80b391ae71ecd4e4d8ea00ed30130862, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -55,7 +58,7 @@ ModelImporter:
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
-    nodeNameCollisionStrategy: 0
+    nodeNameCollisionStrategy: 1
     fileIdsGeneration: 2
     swapUVChannels: 0
     generateSecondaryUV: 0
@@ -114,8 +117,8 @@ ModelImporter:
   humanoidOversampling: 1
   avatarSetup: 0
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
-  importBlendShapeDeformPercent: 0
-  remapMaterialsIfMaterialImportModeIsNone: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
   additionalBone: 0
   userData: 
   assetBundleName: 
