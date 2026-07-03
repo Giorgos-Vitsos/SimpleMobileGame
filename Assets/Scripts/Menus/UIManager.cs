@@ -1,18 +1,22 @@
 using UnityEngine;
-using TMPro; // Assuming you use TextMeshPro for the score
+using TMPro; 
 
 public class UIManager : MonoBehaviour
 {
-    [Header("Death Screen UI")]
+    [Header("Death Screen UI (Game Over)")]
     [SerializeField] private Fade _deathScreenFader;
     [SerializeField] private CanvasGroup _deathScreenCanvasGroup;
+    [SerializeField] private TextMeshProUGUI _finalScoreText;
 
-    [Header("Gameplay UI")]
+    [Header("Gameplay UI (Main UI)")]
+    [SerializeField] private Fade _mainUIFader;
+    [SerializeField] private CanvasGroup _mainUICanvasGroup;
     [SerializeField] private TextMeshProUGUI _scoreText;
 
     private void Start()
     {
         if (_scoreText != null) _scoreText.text = "Score: 0";
+        if (_scoreText != null) _finalScoreText.text = "Score: 0";
     }
 
     private void OnEnable()
@@ -33,10 +37,16 @@ public class UIManager : MonoBehaviour
         {
             _scoreText.text = $"Score: {newScore}";
         }
+        if (_finalScoreText != null)
+        {
+            _finalScoreText.text = $"Score: {newScore}";
+        }
     }
 
     private void ShowDeathScreen()
     {
+        DisableGameUI();
+        
         if (_deathScreenCanvasGroup != null)
         {
             _deathScreenCanvasGroup.interactable = true;
@@ -46,6 +56,15 @@ public class UIManager : MonoBehaviour
         if (_deathScreenFader != null)
         {
             _deathScreenFader.TriggerFade(Fade.FadeType.In);
+        }
+    }
+
+    private void DisableGameUI()
+    {
+        
+        if (_mainUIFader != null)
+        {
+            _mainUIFader.TriggerFade(Fade.FadeType.Out);
         }
     }
 }
