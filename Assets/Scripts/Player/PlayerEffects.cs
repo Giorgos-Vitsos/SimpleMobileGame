@@ -11,6 +11,7 @@ public class PlayerEffects : MonoBehaviour
 
     private Queue<StatusEffect> _effectQueue = new();
     private StatusEffect _activeEffect = null;
+    private bool _gamePaused=false;
 
     private void Awake()
     {
@@ -19,7 +20,20 @@ public class PlayerEffects : MonoBehaviour
 
     private void Update()
     {
+        if (_gamePaused) return;
         HandleEffects();
+    }
+
+    private void OnEnable()
+    {
+        GameEvents.OnPauseStateChanged+=StopEffects;
+
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.OnPauseStateChanged-=StopEffects;
+
     }
 
     public void SetInvincibility(bool state) => IsInvincible = state;
@@ -67,4 +81,6 @@ public class PlayerEffects : MonoBehaviour
         StatusEffect nextInQueue = _effectQueue.Count > 0 ? _effectQueue.Peek() : null;
         GameEvents.OnEffectsHUDUpdated?.Invoke(_activeEffect, nextInQueue);
     }
+
+    private void StopEffects(bool state)=>_gamePaused=state;
 }

@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -31,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
         moveLeftAction.action.performed += LeftAction;
         moveRightAction.action.performed += RightAction;
         GameEvents.OnPlayerDeath += DisableMovement;
+        GameEvents.OnPauseStateChanged +=SwitchStateMovement;
     }
 
     private void OnDisable()
@@ -38,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
         moveLeftAction.action.performed -= LeftAction;
         moveRightAction.action.performed -= RightAction;
         GameEvents.OnPlayerDeath -= DisableMovement;
+        GameEvents.OnPauseStateChanged -= SwitchStateMovement;
     }
 
     private void RightAction(InputAction.CallbackContext context)
@@ -56,6 +59,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        HandleMovement();
+    }
+
+    private void HandleMovement()
+    {
         if (!_canMove) return;
 
         float targetXPosition = (int)_currentLane * laneDistance;
@@ -70,4 +78,6 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void DisableMovement() => _canMove = false;
+    private void SwitchStateMovement(bool state)=>_canMove=!state;
+
 }

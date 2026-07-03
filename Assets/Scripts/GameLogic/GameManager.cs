@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
 
     private int _score = 0;
     private PlayerEffects _playerEffects; 
+    private bool _gamePaused=false;
+    private float _prevTimeScale=1;
 
     private void Awake()
     {
@@ -20,6 +22,7 @@ public class GameManager : MonoBehaviour
         GameEvents.OnPlayerDeath += HandleGameOver;
         GameEvents.OnTrackCleared += HandleTrackCleared;
         GameEvents.OnRestartRequest+=ReloadGame;
+        GameEvents.OnPauseRequested+=TogglePause;
     }
 
     private void OnDisable()
@@ -27,7 +30,9 @@ public class GameManager : MonoBehaviour
         GameEvents.OnPlayerDeath -= HandleGameOver;
         GameEvents.OnTrackCleared -= HandleTrackCleared;
         GameEvents.OnRestartRequest-=ReloadGame;
+        GameEvents.OnPauseRequested-=TogglePause;
     }
+    
 
     private void HandleTrackCleared()
     {
@@ -54,5 +59,20 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale=1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    private void TogglePause()
+    {
+        _gamePaused=!_gamePaused;
+        if (_gamePaused)
+        {
+            _prevTimeScale=Time.timeScale;
+            Time.timeScale=0;
+        }
+        else
+        {
+            Time.timeScale=_prevTimeScale;
+        }
+        GameEvents.OnPauseStateChanged?.Invoke(_gamePaused);
     }
 }

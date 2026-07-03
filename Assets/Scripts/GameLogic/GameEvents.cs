@@ -8,4 +8,6 @@ public static class GameEvents
     public static Action<int> OnScoreUpdated;
     public static Action<StatusEffect, StatusEffect> OnEffectsHUDUpdated;
     public static Action OnRestartRequest;
+    public static Action OnPauseRequested;
+    public static Action<bool> OnPauseStateChanged;
 }
