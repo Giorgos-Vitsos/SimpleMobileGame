@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2967807054323357310}
   - component: {fileID: 7467970564008735453}
   - component: {fileID: 3103931522325074451}
+  - component: {fileID: 7292503402225625170}
   m_Layer: 0
   m_Name: PowerUp_Master
   m_TagString: PowerUp
@@ -68,6 +69,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnedItem
   type: 1
+--- !u!95 &7292503402225625170
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2295734536333808551}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1ad213c025d34f64182ad020a1f9efe9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &2751101416227615136
 PrefabInstance:
   m_ObjectHideFlags: 0
