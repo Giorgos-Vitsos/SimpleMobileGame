@@ -5,10 +5,13 @@ public abstract class StatusEffect
     public float duration;
     public float remainingTime;
 
-    protected StatusEffect(float time)
+    public Sprite Icon { get; private set; }
+
+    protected StatusEffect(float time,Sprite icon)
     {
         duration = time;
         remainingTime = time;
+        Icon =icon;
     }
     public abstract void OnApplyEffect(PlayerEffects player);
     public abstract void OnRemoveEffect(PlayerEffects player);
@@ -16,7 +19,7 @@ public abstract class StatusEffect
 
 public class ShieldEffect : StatusEffect
 {
-    public ShieldEffect(float time) : base(time) { }
+    public ShieldEffect(float time,Sprite icon) : base(time,icon) { }
 
     public override void OnApplyEffect(PlayerEffects player)
     {
@@ -32,7 +35,7 @@ public class ShieldEffect : StatusEffect
 public class SlowMoEffect : StatusEffect
 {
     private float _slowDownTarget;
-    public SlowMoEffect(float time,float slowDownTarget) : base(time)
+    public SlowMoEffect(float time,float slowDownTarget,Sprite icon) : base(time,icon)
     {
         _slowDownTarget=slowDownTarget;
     }
@@ -53,10 +56,9 @@ public class SpeedEffect : StatusEffect
 {
     private float _speed;
     private ShieldEffect _shield;
-    public SpeedEffect(float time,float speed) : base(time)
+    public SpeedEffect(float time,float speed,Sprite icon) : base(time,icon)
     {
         _speed=speed;
-        _shield=new(time);
 
     }
 
@@ -78,7 +80,7 @@ public class CombinedEffect : StatusEffect
 {
     private StatusEffect[] _effects;
 
-    public CombinedEffect(float time, params StatusEffect[] effects) : base(time)
+    public CombinedEffect(float time,Sprite icon, params StatusEffect[] effects) : base(time,icon)
     {
         _effects = effects;
     }

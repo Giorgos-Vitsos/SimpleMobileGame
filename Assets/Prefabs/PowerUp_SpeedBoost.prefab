@@ -88,3 +88,4 @@ MonoBehaviour:
   effectDuration: 5
   speedChange: 3
   grantShield: 1
+  icon: {fileID: 21300000, guid: 4bec1f04a2826114daf4dc57271e45fa, type: 3}

@@ -13,6 +13,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private CanvasGroup _mainUICanvasGroup;
     [SerializeField] private TextMeshProUGUI _scoreText;
 
+    [Header("PowerUp HUD")]
+    [SerializeField] private UnityEngine.UI.Image _activeIcon;
+    [SerializeField] private UnityEngine.UI.Image _queueIcon;
+
     private int _cachedScore = 0;
 
     private void Start()
@@ -25,12 +29,14 @@ public class UIManager : MonoBehaviour
     {
         GameEvents.OnPlayerDeath += ShowDeathScreen;
         GameEvents.OnScoreUpdated += UpdateScoreDisplay;
+        GameEvents.OnEffectsHUDUpdated += UpdateEffectsHUD;
     }
 
     private void OnDisable()
     {
         GameEvents.OnPlayerDeath -= ShowDeathScreen;
         GameEvents.OnScoreUpdated -= UpdateScoreDisplay;
+        GameEvents.OnEffectsHUDUpdated -= UpdateEffectsHUD;
     }
 
     private void UpdateScoreDisplay(int newScore)
@@ -75,6 +81,31 @@ public class UIManager : MonoBehaviour
         if (_mainUIFader != null)
         {
             _mainUIFader.TriggerFade(Fade.FadeType.Out);
+        }
+    }
+
+    private void UpdateEffectsHUD(StatusEffect active, StatusEffect queued)
+    {
+        if (active != null && active.Icon != null)
+        {
+            _activeIcon.sprite = active.Icon;
+            _activeIcon.color = new Color(1, 1, 1, 1);
+        }
+        else
+        {
+            _activeIcon.sprite = null;
+            _activeIcon.color = new Color(1, 1, 1, 0);
+        }
+
+        if (queued != null && queued.Icon != null)
+        {
+            _queueIcon.sprite = queued.Icon;
+            _queueIcon.color = new Color(1, 1, 1, 1);
+        }
+        else
+        {
+            _queueIcon.sprite = null;
+            _queueIcon.color = new Color(1, 1, 1, 0);
         }
     }
 }

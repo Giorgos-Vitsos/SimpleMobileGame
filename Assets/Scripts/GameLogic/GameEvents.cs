@@ -7,4 +7,5 @@ public static class GameEvents
     public static Action OnTrackCleared;
     public static Action<int> OnDifficultyIncreased;
     public static Action<int> OnScoreUpdated;
+    public static Action<StatusEffect, StatusEffect> OnEffectsHUDUpdated;
 }

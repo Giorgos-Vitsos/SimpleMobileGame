@@ -32,12 +32,14 @@ public class PlayerEffects : MonoBehaviour
     {
         if (_activeEffect == null) StartEffect(effect);
         else _effectQueue.Enqueue(effect);
+        UpdateHUD();
     }
 
     private void StartEffect(StatusEffect effect)
     {
         _activeEffect = effect;
         _activeEffect.OnApplyEffect(this); 
+        UpdateHUD();
     }
 
     private void StopEffect()
@@ -45,6 +47,7 @@ public class PlayerEffects : MonoBehaviour
         if (_activeEffect == null) return;
         _activeEffect.OnRemoveEffect(this);
         _activeEffect = null;
+        UpdateHUD();
     }
 
     private void HandleEffects()
@@ -57,5 +60,11 @@ public class PlayerEffects : MonoBehaviour
         
         _activeEffect.remainingTime -= Time.unscaledDeltaTime;
         if (_activeEffect.remainingTime <= 0) StopEffect();
+    }
+
+    private void UpdateHUD()
+    {
+        StatusEffect nextInQueue = _effectQueue.Count > 0 ? _effectQueue.Peek() : null;
+        GameEvents.OnEffectsHUDUpdated?.Invoke(_activeEffect, nextInQueue);
     }
 }

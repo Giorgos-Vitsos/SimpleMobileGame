@@ -30,7 +30,6 @@ public class GameManager : MonoBehaviour
     {
         _score++;
         
-        // Broadcast the new score to anyone listening (like the UI)
         GameEvents.OnScoreUpdated?.Invoke(_score);
         
         if (_score % tracksUntilDifficultyIncrease == 0 && _score != 0)

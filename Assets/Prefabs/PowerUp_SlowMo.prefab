@@ -87,3 +87,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PowerSlowMo
   effectDuration: 5
   slowDownTarget: 0.5
+  icon: {fileID: 21300000, guid: d0615d117706b524aabea768e2e33f50, type: 3}
