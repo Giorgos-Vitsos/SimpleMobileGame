@@ -13,10 +13,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private CanvasGroup _mainUICanvasGroup;
     [SerializeField] private TextMeshProUGUI _scoreText;
 
+    private int _cachedScore = 0;
+
     private void Start()
     {
         if (_scoreText != null) _scoreText.text = "Score: 0";
-        if (_scoreText != null) _finalScoreText.text = "Score: 0";
+        if (_finalScoreText != null) _finalScoreText.text = "Score: 0";
     }
 
     private void OnEnable()
@@ -33,19 +35,22 @@ public class UIManager : MonoBehaviour
 
     private void UpdateScoreDisplay(int newScore)
     {
+        _cachedScore = newScore;
+        
         if (_scoreText != null)
         {
-            _scoreText.text = $"Score: {newScore}";
-        }
-        if (_finalScoreText != null)
-        {
-            _finalScoreText.text = $"Score: {newScore}";
+            _scoreText.text = $"Score: {_cachedScore}";
         }
     }
 
     private void ShowDeathScreen()
     {
         DisableGameUI();
+        
+        if (_finalScoreText != null)
+        {
+            _finalScoreText.text = $"Score: {_cachedScore}";
+        }
         
         if (_deathScreenCanvasGroup != null)
         {
@@ -61,7 +66,12 @@ public class UIManager : MonoBehaviour
 
     private void DisableGameUI()
     {
-        
+        if (_mainUICanvasGroup != null)
+        {
+            _mainUICanvasGroup.interactable = false;
+            _mainUICanvasGroup.blocksRaycasts = false;
+        }
+
         if (_mainUIFader != null)
         {
             _mainUIFader.TriggerFade(Fade.FadeType.Out);
