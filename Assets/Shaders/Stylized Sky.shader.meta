@@ -1,8 +1,9 @@
 fileFormatVersion: 2
-guid: 20f6d22d93779de4ea6f62f8ab305593
-NativeFormatImporter:
+guid: eb3c6fb598ded4c71b8968e1c40a3b4d
+ShaderImporter:
   externalObjects: {}
-  mainObjectFileID: 0
+  defaultTextures: []
+  nonModifiableTextures: []
   userData: 
   assetBundleName: 
   assetBundleVariant: 
@@ -11,5 +12,5 @@ AssetOrigin:
   productId: 174576
   packageName: Customizable skybox
   packageVersion: 1.0
-  assetPath: Assets/Customizable Skybox/Stylized Sky/Materials/Sunset4.mat
+  assetPath: Assets/Customizable Skybox/Stylized Sky/Shaders/Stylized Sky.shader
   uploadId: 378796
