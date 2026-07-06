@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -52,7 +53,8 @@ public class GameManager : MonoBehaviour
 
     private void HandleGameOver()
     {
-        Time.timeScale = 0f;
+
+        DeathSequence();
     }
 
     private void ReloadGame()
@@ -74,5 +76,11 @@ public class GameManager : MonoBehaviour
             Time.timeScale=_prevTimeScale;
         }
         GameEvents.OnPauseStateChanged?.Invoke(_gamePaused);
+    }
+
+    private IEnumerator DeathSequence()
+    {
+        yield return new WaitForSeconds(2f);
+        Time.timeScale=0f;
     }
 }

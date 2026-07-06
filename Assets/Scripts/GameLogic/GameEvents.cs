@@ -10,4 +10,5 @@ public static class GameEvents
     public static Action OnRestartRequest;
     public static Action OnPauseRequested;
     public static Action<bool> OnPauseStateChanged;
+    public static Action<int> OnPlayerDodge;
 }

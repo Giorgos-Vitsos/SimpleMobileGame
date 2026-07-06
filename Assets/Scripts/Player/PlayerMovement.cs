@@ -48,6 +48,7 @@ public class PlayerMovement : MonoBehaviour
         if (!_canMove) return;
         if (_currentLane == Lane.left) _currentLane = Lane.middle;
         else if (_currentLane == Lane.middle) _currentLane = Lane.right;
+        GameEvents.OnPlayerDodge?.Invoke(1);
     }
 
     private void LeftAction(InputAction.CallbackContext context)
@@ -55,6 +56,7 @@ public class PlayerMovement : MonoBehaviour
         if (!_canMove) return;
         if (_currentLane == Lane.right) _currentLane = Lane.middle;
         else if (_currentLane == Lane.middle) _currentLane = Lane.left;
+        GameEvents.OnPlayerDodge?.Invoke(-1);
     }
 
     private void Update()
@@ -69,12 +71,8 @@ public class PlayerMovement : MonoBehaviour
         float targetXPosition = (int)_currentLane * laneDistance;
         float xDifference = targetXPosition - transform.position.x;
         _lateralVelocity = xDifference * snappingForce;
-
-        var forward = _effects.CurrentSpeed * Time.deltaTime;
-        var dodge = _lateralVelocity * Time.unscaledDeltaTime;
-        Vector3 moveVector = new(dodge, 0f, forward);
-
-        _controller.Move(moveVector);
+        
+        _controller.Move(new Vector3(_lateralVelocity,0f,_effects.CurrentSpeed)*Time.deltaTime);
     }
 
     private void DisableMovement() => _canMove = false;
