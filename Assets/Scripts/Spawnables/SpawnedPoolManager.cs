@@ -44,11 +44,13 @@ public class SpawnedPoolManager : MonoBehaviour
     private void OnEnable()
     {
         GameEvents.OnDifficultyIncreased += HandleDifficultySpike;
+        GameEvents.OnGatherSaveData+=InjectData;
     }
 
     private void OnDisable()
     {
         GameEvents.OnDifficultyIncreased -= HandleDifficultySpike;
+        GameEvents.OnGatherSaveData-=InjectData;
     }
 
     private void HandleDifficultySpike(int extraObstacles)
@@ -138,6 +140,43 @@ public class SpawnedPoolManager : MonoBehaviour
                 _objectPools[item.PrefabSource].Release(item);
             }
             _trackItems.Remove(track);
+        }
+    }
+
+    private void InjectData(GameStateData snapshot)
+    {
+        snapshot.currentMaxObstaclesPerTrack = _currMaxObstaclesPerTrack;
+        foreach (KeyValuePair<Track, List<SpawnedItem>> entry in _trackItems)
+        {
+            Track track = entry.Key;
+            List<SpawnedItem> items = entry.Value;
+
+            if (items.Count == 0) continue; 
+
+            SavedTrackItems savedItems = new SavedTrackItems();
+            savedItems.trackZPosition = track.transform.position.z;
+
+            foreach (SpawnedItem item in items)
+            {
+                int prefabID = System.Array.IndexOf(itemPrefabs, item.PrefabSource);
+                
+                int spawnIndex = -1;
+                for (int i = 0; i < track.spawnPoints.Length; i++)
+                {
+                    if ((track.spawnPoints[i].position - item.transform.position).sqrMagnitude < 0.01f)
+                    {
+                        spawnIndex = i;
+                        break;
+                    }
+                }
+                if (prefabID != -1 && spawnIndex != -1)
+                {
+                    savedItems.itemPrefabIDs.Add(prefabID);
+                    savedItems.spawnPointIndices.Add(spawnIndex);
+                }
+            }
+            
+            snapshot.trackItems.Add(savedItems);
         }
     }
 }

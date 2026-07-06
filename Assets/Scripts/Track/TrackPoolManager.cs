@@ -46,6 +46,16 @@ public class TrackPoolManager : MonoBehaviour
         if (!isInitial) itemManager.Populate(newTrack);
     }
 
+    private void OnEnable()
+    {
+        GameEvents.OnGatherSaveData+=InjectData;
+    }
+
+    private void Disable()
+    {
+        GameEvents.OnGatherSaveData-=InjectData;
+    }
+
     private void OnDestroyTrack(Track track) => Destroy(track.gameObject);
     private void OnRelease(Track track) => track.OnDespawn();
     private Track createTrack() => Instantiate(trackPrefab);
@@ -71,4 +81,23 @@ public class TrackPoolManager : MonoBehaviour
     }
 
     private void Update() => HandleTracks();
+
+    public Queue<Track> GetActiveTracks()
+    {
+        return _activeTracks;
+    }
+
+    public float GetNextSpawnPos()
+    {
+        return _spawnPos;
+    }
+
+    private void InjectData(GameStateData snapshot)
+    {
+        snapshot.nextSpawnPos=_spawnPos;
+        foreach (Track track in _activeTracks)
+        {
+            snapshot.trackZPositions.Add(track.transform.position.z);
+        }
+    }
 }

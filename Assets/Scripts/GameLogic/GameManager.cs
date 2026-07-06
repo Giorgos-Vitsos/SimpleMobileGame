@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -57,6 +58,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        if (Keyboard.current != null && Keyboard.current.sKey.wasPressedThisFrame)
+        {
+            HandleSaveGame();
+        }
+    }
+
     private void HandleGameOver()
     {
 
@@ -88,5 +97,13 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         Time.timeScale=0f;
+    }
+
+    private void HandleSaveGame()
+    {
+        GameStateData snapshot=new();
+        snapshot.currentScore=_score;
+        GameEvents.OnGatherSaveData?.Invoke(snapshot);
+        SaveManager.SaveGameState(snapshot);
     }
 }

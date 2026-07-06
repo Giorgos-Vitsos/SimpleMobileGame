@@ -19,7 +19,7 @@ public class PlayerMovement : MonoBehaviour
     private float _lateralVelocity;
     private bool _canMove = true;
 
-    private enum Lane { left = -1, middle = 0, right = 1 }
+    public enum Lane { left = -1, middle = 0, right = 1 }
 
     private void Awake()
     {
@@ -33,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
         moveRightAction.action.performed += RightAction;
         GameEvents.OnPlayerDeath += DisableMovement;
         GameEvents.OnPauseStateChanged +=SwitchStateMovement;
+        GameEvents.OnGatherSaveData+=InjectData;
     }
 
     private void OnDisable()
@@ -41,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
         moveRightAction.action.performed -= RightAction;
         GameEvents.OnPlayerDeath -= DisableMovement;
         GameEvents.OnPauseStateChanged -= SwitchStateMovement;
+        GameEvents.OnGatherSaveData-=InjectData;
     }
 
     private void RightAction(InputAction.CallbackContext context)
@@ -77,5 +79,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void DisableMovement() => _canMove = false;
     private void SwitchStateMovement(bool state)=>_canMove=!state;
+
+    private void InjectData(GameStateData snapshot)
+    {
+        snapshot.currentLane=_currentLane;
+        snapshot.playerZPosition=transform.position.z;
+    }
 
 }

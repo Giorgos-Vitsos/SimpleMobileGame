@@ -27,14 +27,13 @@ public class FoliageSpawner : MonoBehaviour
 
         for (int i = 0; i < spawnCount; i++)
         {
-            Vector3 spawnPosition = new Vector3(Random.Range(minX, maxX), surfaceY, Random.Range(minZ, maxZ));
+            Vector3 spawnPosition = new (Random.Range(minX, maxX), surfaceY, Random.Range(minZ, maxZ));
             GameObject randomPrefab = foliagePrefabs[Random.Range(0, foliagePrefabs.Length)];
             
             GameObject spawnedObject = Instantiate(randomPrefab, spawnPosition, Quaternion.identity);
             spawnedObject.transform.SetParent(transform);
             spawnedObject.transform.rotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
 
-            // Height-only randomization
             float randomHeightScale = Random.Range(minScale, maxScale);
             Vector3 parentStretch = transform.lossyScale; 
 
