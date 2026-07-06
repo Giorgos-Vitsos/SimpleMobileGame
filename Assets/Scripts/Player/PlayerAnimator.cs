@@ -35,7 +35,6 @@ public class PlayerAnimator : MonoBehaviour
     {
         if (_playerEffects != null)
         {
-            Debug.Log($"Speed for locomotion is: {_playerEffects.CurrentSpeed}");
             _animator.SetFloat("Speed",_playerEffects.CurrentSpeed);
         }
     }

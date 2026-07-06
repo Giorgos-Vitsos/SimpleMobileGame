@@ -39,6 +39,7 @@ public class TrackPoolManager : MonoBehaviour
     {
         Track newTrack = _trackPool.Get();
         newTrack.transform.position = new Vector3(0, 0, _spawnPos);
+        newTrack.SetupTrack();
         _spawnPos += TrackLength;
         _activeTracks.Enqueue(newTrack);
         
@@ -57,7 +58,7 @@ public class TrackPoolManager : MonoBehaviour
         Track oldestTrack = _activeTracks.Peek();
         
         
-        if (oldestTrack.transform.position.z + TrackLength < playerTransform.position.z)
+        if (oldestTrack.transform.position.z + TrackLength/2+2 < playerTransform.position.z)
         {
             itemManager.ClearItems(oldestTrack);
             _activeTracks.Dequeue();

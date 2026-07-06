@@ -15,4 +15,9 @@ public class Track : MonoBehaviour
     {
         gameObject.SetActive(true);
     }
+
+    public void SetupTrack()
+    {
+        GetComponentInChildren<MileStonSign>().UpdateDistance(transform.position.z);
+    }
 }

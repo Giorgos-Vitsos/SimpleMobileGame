@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     private PlayerEffects _playerEffects; 
     private bool _gamePaused=false;
     private float _prevTimeScale=1;
+    private bool _firstTrack=true;
 
     private void Awake()
     {
@@ -37,6 +38,11 @@ public class GameManager : MonoBehaviour
 
     private void HandleTrackCleared()
     {
+        if (_firstTrack)
+        {
+            _firstTrack=false;
+            return;
+        }
         _score++;
         
         GameEvents.OnScoreUpdated?.Invoke(_score);
