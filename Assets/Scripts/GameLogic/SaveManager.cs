@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.IO; 
+using System;
 
 public static class SaveManager
 {
@@ -7,26 +8,37 @@ public static class SaveManager
 
     public static void SaveGameState(GameStateData dataToSave)
     {
-       
-        string jsonText = JsonUtility.ToJson(dataToSave, true);
-
-        File.WriteAllText(SaveFilePath, jsonText);
-        
-        Debug.Log("Game successfully saved at: " + SaveFilePath);
+        try
+        {
+            string jsonText = JsonUtility.ToJson(dataToSave, true);
+            File.WriteAllText(SaveFilePath, jsonText);
+            Debug.Log("Game successfully saved at: " + SaveFilePath);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Failed to save game: " + e.Message);
+        }
     }
 
     public static GameStateData LoadGameState()
     {
-
         if (File.Exists(SaveFilePath))
         {
-
-            string jsonText = File.ReadAllText(SaveFilePath);
-
-            GameStateData loadedData = JsonUtility.FromJson<GameStateData>(jsonText);
-            return loadedData;
+            try 
+            {
+                string jsonText = File.ReadAllText(SaveFilePath);
+                GameStateData loadedData = JsonUtility.FromJson<GameStateData>(jsonText);
+                Debug.Log("Game loaded successfully.");
+                return loadedData;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Failed to load save file, it might be corrupted: " + e.Message);
+                return null;
+            }
         }
-
+        
+        Debug.LogWarning("No save file found at " + SaveFilePath);
         return null;
     }
 

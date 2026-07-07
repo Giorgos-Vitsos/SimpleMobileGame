@@ -27,12 +27,16 @@ public class PlayerEffects : MonoBehaviour
     private void OnEnable()
     {
         GameEvents.OnPauseStateChanged+=StopEffects;
+        GameEvents.OnGatherSaveData += InjectData;
+        GameEvents.OnRestoreSaveData += RestoreData;
 
     }
 
     private void OnDisable()
     {
         GameEvents.OnPauseStateChanged-=StopEffects;
+        GameEvents.OnGatherSaveData -= InjectData;
+        GameEvents.OnRestoreSaveData -= RestoreData;
 
     }
 
@@ -83,4 +87,93 @@ public class PlayerEffects : MonoBehaviour
     }
 
     private void StopEffects(bool state)=>_gamePaused=state;
+
+    private void InjectData(GameStateData snapshot)
+    {
+
+        if (_activeEffect != null)
+        {
+            _activeEffect.OnRemoveEffect(this);
+        }
+
+        // 2. Save the true, unmodified speed
+        snapshot.playerCurrentSpeed = CurrentSpeed;
+
+        // 3. Instantly re-apply the effect so gameplay continues uninterrupted
+        if (_activeEffect != null)
+        {
+            _activeEffect.OnApplyEffect(this);
+        }
+        
+        snapshot.activeEffect = _activeEffect?.GetSaveData();
+
+        snapshot.effectQueue.Clear();
+        foreach (var effect in _effectQueue)
+        {
+            snapshot.effectQueue.Add(effect.GetSaveData());
+        }
+    }
+
+    private void RestoreData(GameStateData data)
+    {
+        // 1. Καθαρίζουμε τα πάντα
+        if (_activeEffect != null) StopEffect();
+        _effectQueue.Clear();
+
+        // 2. Επαναφορά base ταχύτητας
+        CurrentSpeed = data.playerCurrentSpeed;
+
+        // 3. Επαναφορά Active Effect
+        if (data.activeEffect != null)
+        {
+            StatusEffect loadedEffect = RebuildEffect(data.activeEffect);
+            if (loadedEffect != null) StartEffect(loadedEffect);
+        }
+
+        // 4. Επαναφορά Ουράς
+        foreach (var savedData in data.effectQueue)
+        {
+            StatusEffect loadedEffect = RebuildEffect(savedData);
+            if (loadedEffect != null) _effectQueue.Enqueue(loadedEffect);
+        }
+
+        UpdateHUD();
+    }
+
+    // Factory method που ξαναφτιάχνει το σωστό αντικείμενο από το JSON
+    private StatusEffect RebuildEffect(SavedEffectData data)
+    {
+        // Σημείωση: Περνάμε null για το Sprite icon κατά το Load, διότι τα Sprites 
+        // δεν αποθηκεύονται. Το HUD σου πρέπει να ελέγχει αν icon != null.
+        switch (data.type)
+        {
+            case EffectType.Shield:
+                var shield = new ShieldEffect(data.remainingTime, null);
+                shield.remainingTime = data.remainingTime;
+                return shield;
+                
+            case EffectType.SlowMo:
+                var slow = new SlowMoEffect(data.remainingTime, data.floatParameter, null);
+                slow.remainingTime = data.remainingTime;
+                return slow;
+                
+            case EffectType.Speed:
+                var speed = new SpeedEffect(data.remainingTime, data.floatParameter, null);
+                speed.remainingTime = data.remainingTime;
+                return speed;
+                
+            case EffectType.Combined:
+                List<StatusEffect> nested = new List<StatusEffect>();
+                foreach (var nestedData in data.nestedEffects)
+                {
+                    nested.Add(RebuildEffect(nestedData));
+                }
+                var combined = new CombinedEffect(data.remainingTime, null, nested.ToArray());
+                combined.remainingTime = data.remainingTime;
+                return combined;
+                
+            default:
+                return null;
+        }
+    }
 }

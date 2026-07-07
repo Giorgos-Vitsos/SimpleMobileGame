@@ -3,27 +3,41 @@ using System.Collections.Generic;
 [System.Serializable] 
 public class GameStateData
 {
-    // --- PLAYER STATS ---
     public int currentScore;
     public PlayerMovement.Lane currentLane; 
     public float playerZPosition;
     public float nextSpawnPos; 
     public int currentMaxObstaclesPerTrack;
 
-    // 1. Το TrackPoolManager θα γεμίζει ΑΥΤΗ τη λίστα (Μόνο τις θέσεις των δρόμων)
-    public List<float> trackZPositions = new List<float>();
+    public float playerCurrentSpeed;
+    public SavedEffectData activeEffect;
+    public List<SavedEffectData> effectQueue = new List<SavedEffectData>();
 
-    // 2. Το SpawnedPoolManager θα γεμίζει ΑΥΤΗ τη λίστα (Μόνο τα items)
+    public List<int> trackZPositionsRounded = new List<int>();
+
     public List<SavedTrackItems> trackItems = new List<SavedTrackItems>();
 }
 
-// Το mini-blueprint αποκλειστικά για τα items ενός δρόμου
 [System.Serializable]
 public class SavedTrackItems
 {
-    // Αυτό είναι το "κλειδί" για να ξέρουμε σε ποιον δρόμο ανήκουν τα items όταν κάνουμε Load
-    public float trackZPosition; 
     
-    public List<int> itemPrefabIDs = new List<int>();
+    public int trackZPositionRounded; 
+    public List<string> itemPrefabNames = new List<string>();
     public List<int> spawnPointIndices = new List<int>();
+}
+
+public enum EffectType { Shield, SlowMo, Speed, Combined }
+
+[System.Serializable]
+public class SavedEffectData
+{
+    public EffectType type;
+    public float remainingTime;
+    
+    // Αποθηκεύει το _speed Ή το _slowDownTarget ανάλογα το effect
+    public float floatParameter; 
+    
+    // Αν είναι CombinedEffect, αποθηκεύει τα υπο-effects του
+    public List<SavedEffectData> nestedEffects = new List<SavedEffectData>(); 
 }

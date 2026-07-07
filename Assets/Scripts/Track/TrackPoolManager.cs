@@ -49,11 +49,13 @@ public class TrackPoolManager : MonoBehaviour
     private void OnEnable()
     {
         GameEvents.OnGatherSaveData+=InjectData;
+        GameEvents.OnRestoreSaveData+=RestoreData;
     }
 
     private void Disable()
     {
         GameEvents.OnGatherSaveData-=InjectData;
+        GameEvents.OnRestoreSaveData-=RestoreData;
     }
 
     private void OnDestroyTrack(Track track) => Destroy(track.gameObject);
@@ -82,22 +84,40 @@ public class TrackPoolManager : MonoBehaviour
 
     private void Update() => HandleTracks();
 
-    public Queue<Track> GetActiveTracks()
-    {
-        return _activeTracks;
-    }
-
-    public float GetNextSpawnPos()
-    {
-        return _spawnPos;
-    }
 
     private void InjectData(GameStateData snapshot)
     {
         snapshot.nextSpawnPos=_spawnPos;
         foreach (Track track in _activeTracks)
         {
-            snapshot.trackZPositions.Add(track.transform.position.z);
+            snapshot.trackZPositionsRounded.Add(Mathf.RoundToInt(track.transform.position.z));
+        }
+    }
+
+    private void RestoreData(GameStateData data)
+    {
+        while (_activeTracks.Count > 0)
+        {
+            Track oldTrack = _activeTracks.Dequeue();
+            itemManager.ClearItems(oldTrack);
+            _trackPool.Release(oldTrack);
+        }
+
+        _spawnPos = data.nextSpawnPos;
+
+        foreach (int savedZRounded in data.trackZPositionsRounded)
+        {
+            Track loadedTrack = _trackPool.Get();
+            loadedTrack.transform.position = new Vector3(0, 0, savedZRounded);
+            loadedTrack.SetupTrack();
+            _activeTracks.Enqueue(loadedTrack);
+
+            SavedTrackItems savedItems = data.trackItems.Find(x => x.trackZPositionRounded == savedZRounded);
+            
+            if (savedItems != null)
+            {
+                itemManager.RestoreSpecificItems(loadedTrack, savedItems);
+            }
         }
     }
 }

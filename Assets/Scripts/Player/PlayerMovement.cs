@@ -34,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
         GameEvents.OnPlayerDeath += DisableMovement;
         GameEvents.OnPauseStateChanged +=SwitchStateMovement;
         GameEvents.OnGatherSaveData+=InjectData;
+        GameEvents.OnRestoreSaveData += RestoreData;
     }
 
     private void OnDisable()
@@ -43,6 +44,7 @@ public class PlayerMovement : MonoBehaviour
         GameEvents.OnPlayerDeath -= DisableMovement;
         GameEvents.OnPauseStateChanged -= SwitchStateMovement;
         GameEvents.OnGatherSaveData-=InjectData;
+        GameEvents.OnRestoreSaveData -= RestoreData;
     }
 
     private void RightAction(InputAction.CallbackContext context)
@@ -84,6 +86,14 @@ public class PlayerMovement : MonoBehaviour
     {
         snapshot.currentLane=_currentLane;
         snapshot.playerZPosition=transform.position.z;
+    }
+
+    private void RestoreData(GameStateData data)
+    {
+        _currentLane=data.currentLane;
+        _controller.enabled = false;
+        transform.position = new Vector3(0, 0, data.playerZPosition);
+        _controller.enabled = true;
     }
 
 }

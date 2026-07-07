@@ -11,9 +11,9 @@ public class GameManager : MonoBehaviour
 
     private int _score = 0;
     private PlayerEffects _playerEffects; 
-    private bool _gamePaused=false;
-    private float _prevTimeScale=1;
-    private bool _firstTrack=true;
+    private bool _gamePaused = false;
+    private float _prevTimeScale = 1;
+    private bool _firstTrack = true;
 
     private void Awake()
     {
@@ -24,24 +24,25 @@ public class GameManager : MonoBehaviour
     {
         GameEvents.OnPlayerDeath += HandleGameOver;
         GameEvents.OnTrackCleared += HandleTrackCleared;
-        GameEvents.OnRestartRequest+=ReloadGame;
-        GameEvents.OnPauseRequested+=TogglePause;
+        GameEvents.OnRestartRequest += ReloadGame;
+        GameEvents.OnPauseRequested += TogglePause;
+        GameEvents.OnRestoreSaveData += RestoreData;
     }
 
     private void OnDisable()
     {
         GameEvents.OnPlayerDeath -= HandleGameOver;
         GameEvents.OnTrackCleared -= HandleTrackCleared;
-        GameEvents.OnRestartRequest-=ReloadGame;
-        GameEvents.OnPauseRequested-=TogglePause;
+        GameEvents.OnRestartRequest -= ReloadGame;
+        GameEvents.OnPauseRequested -= TogglePause;
+        GameEvents.OnRestoreSaveData -= RestoreData;
     }
-    
 
     private void HandleTrackCleared()
     {
         if (_firstTrack)
         {
-            _firstTrack=false;
+            _firstTrack = false;
             return;
         }
         _score++;
@@ -60,35 +61,40 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (Keyboard.current != null && Keyboard.current.sKey.wasPressedThisFrame)
+        if (Keyboard.current == null) return;
+
+        if (Keyboard.current.sKey.wasPressedThisFrame)
         {
             HandleSaveGame();
+        }
+        else if (Keyboard.current.lKey.wasPressedThisFrame)
+        {
+            HandleLoadGame();
         }
     }
 
     private void HandleGameOver()
     {
-
-        DeathSequence();
+        StartCoroutine(DeathSequence());
     }
 
     private void ReloadGame()
     {
-        Time.timeScale=1f;
+        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private void TogglePause()
     {
-        _gamePaused=!_gamePaused;
+        _gamePaused = !_gamePaused;
         if (_gamePaused)
         {
-            _prevTimeScale=Time.timeScale;
-            Time.timeScale=0;
+            _prevTimeScale = Time.timeScale;
+            Time.timeScale = 0;
         }
         else
         {
-            Time.timeScale=_prevTimeScale;
+            Time.timeScale = _prevTimeScale;
         }
         GameEvents.OnPauseStateChanged?.Invoke(_gamePaused);
     }
@@ -96,14 +102,29 @@ public class GameManager : MonoBehaviour
     private IEnumerator DeathSequence()
     {
         yield return new WaitForSeconds(2f);
-        Time.timeScale=0f;
+        Time.timeScale = 0f;
     }
 
     private void HandleSaveGame()
     {
-        GameStateData snapshot=new();
-        snapshot.currentScore=_score;
+        GameStateData snapshot = new();
+        snapshot.currentScore = _score;
         GameEvents.OnGatherSaveData?.Invoke(snapshot);
         SaveManager.SaveGameState(snapshot);
+    }
+
+    private void HandleLoadGame()
+    {
+        GameStateData loadedData = SaveManager.LoadGameState();
+        if (loadedData != null)
+        {
+            GameEvents.OnRestoreSaveData?.Invoke(loadedData);
+        }
+    }
+
+    private void RestoreData(GameStateData data)
+    {
+        _score = data.currentScore;
+        GameEvents.OnScoreUpdated?.Invoke(_score); 
     }
 }

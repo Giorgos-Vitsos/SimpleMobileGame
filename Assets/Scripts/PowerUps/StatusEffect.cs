@@ -7,19 +7,21 @@ public abstract class StatusEffect
 
     public Sprite Icon { get; private set; }
 
-    protected StatusEffect(float time,Sprite icon)
+    protected StatusEffect(float time, Sprite icon)
     {
         duration = time;
         remainingTime = time;
-        Icon =icon;
+        Icon = icon;
     }
     public abstract void OnApplyEffect(PlayerEffects player);
     public abstract void OnRemoveEffect(PlayerEffects player);
+
+    public abstract SavedEffectData GetSaveData();
 }
 
 public class ShieldEffect : StatusEffect
 {
-    public ShieldEffect(float time,Sprite icon) : base(time,icon) { }
+    public ShieldEffect(float time, Sprite icon) : base(time, icon) { }
 
     public override void OnApplyEffect(PlayerEffects player)
     {
@@ -30,25 +32,35 @@ public class ShieldEffect : StatusEffect
     {
         player.SetInvincibility(false);
     }
+
+    public override SavedEffectData GetSaveData()
+    {
+        return new SavedEffectData { type = EffectType.Shield, remainingTime = remainingTime };
+    }
 }
 
 public class SlowMoEffect : StatusEffect
 {
     private float _slowDownTarget;
-    public SlowMoEffect(float time,float slowDownTarget,Sprite icon) : base(time,icon)
+    public SlowMoEffect(float time, float slowDownTarget, Sprite icon) : base(time, icon)
     {
-        _slowDownTarget=slowDownTarget;
+        _slowDownTarget = slowDownTarget;
     }
 
     public override void OnApplyEffect(PlayerEffects player)
     {
-        Time.timeScale=_slowDownTarget;
+        Time.timeScale = _slowDownTarget;
 
     }
 
     public override void OnRemoveEffect(PlayerEffects player)
     {
-        Time.timeScale=1f;
+        Time.timeScale = 1f;
+    }
+
+    public override SavedEffectData GetSaveData()
+    {
+        return new SavedEffectData { type = EffectType.SlowMo, remainingTime = remainingTime, floatParameter = _slowDownTarget };
     }
 }
 
@@ -56,16 +68,16 @@ public class SpeedEffect : StatusEffect
 {
     private float _speed;
     private ShieldEffect _shield;
-    public SpeedEffect(float time,float speed,Sprite icon) : base(time,icon)
+    public SpeedEffect(float time, float speed, Sprite icon) : base(time, icon)
     {
-        _speed=speed;
+        _speed = speed;
 
     }
 
     public override void OnApplyEffect(PlayerEffects player)
     {
         player.ModifySpeed(_speed);
-        
+
     }
 
     public override void OnRemoveEffect(PlayerEffects player)
@@ -73,14 +85,17 @@ public class SpeedEffect : StatusEffect
         player.ModifySpeed(-_speed);
     }
 
-    
+    public override SavedEffectData GetSaveData()
+    {
+        return new SavedEffectData { type = EffectType.Speed, remainingTime = remainingTime, floatParameter = _speed };
+    }
 }
 
 public class CombinedEffect : StatusEffect
 {
     private StatusEffect[] _effects;
 
-    public CombinedEffect(float time,Sprite icon, params StatusEffect[] effects) : base(time,icon)
+    public CombinedEffect(float time, Sprite icon, params StatusEffect[] effects) : base(time, icon)
     {
         _effects = effects;
     }
@@ -99,5 +114,15 @@ public class CombinedEffect : StatusEffect
         {
             effect.OnRemoveEffect(player);
         }
+    }
+
+    public override SavedEffectData GetSaveData()
+    {
+        var data = new SavedEffectData { type = EffectType.Combined, remainingTime = remainingTime };
+        foreach (var effect in _effects)
+        {
+            data.nestedEffects.Add(effect.GetSaveData());
+        }
+        return data;
     }
 }

@@ -45,12 +45,14 @@ public class SpawnedPoolManager : MonoBehaviour
     {
         GameEvents.OnDifficultyIncreased += HandleDifficultySpike;
         GameEvents.OnGatherSaveData+=InjectData;
+         GameEvents.OnRestoreSaveData+=RestoreData;
     }
 
     private void OnDisable()
     {
         GameEvents.OnDifficultyIncreased -= HandleDifficultySpike;
         GameEvents.OnGatherSaveData-=InjectData;
+         GameEvents.OnRestoreSaveData-=RestoreData;
     }
 
     private void HandleDifficultySpike(int extraObstacles)
@@ -154,11 +156,12 @@ public class SpawnedPoolManager : MonoBehaviour
             if (items.Count == 0) continue; 
 
             SavedTrackItems savedItems = new SavedTrackItems();
-            savedItems.trackZPosition = track.transform.position.z;
+            savedItems.trackZPositionRounded = Mathf.RoundToInt(track.transform.position.z);
 
             foreach (SpawnedItem item in items)
             {
-                int prefabID = System.Array.IndexOf(itemPrefabs, item.PrefabSource);
+    
+                string prefabName = item.PrefabSource.name;
                 
                 int spawnIndex = -1;
                 for (int i = 0; i < track.spawnPoints.Length; i++)
@@ -169,9 +172,9 @@ public class SpawnedPoolManager : MonoBehaviour
                         break;
                     }
                 }
-                if (prefabID != -1 && spawnIndex != -1)
+                if (!string.IsNullOrEmpty(prefabName) && spawnIndex != -1)
                 {
-                    savedItems.itemPrefabIDs.Add(prefabID);
+                    savedItems.itemPrefabNames.Add(prefabName);
                     savedItems.spawnPointIndices.Add(spawnIndex);
                 }
             }
@@ -179,4 +182,39 @@ public class SpawnedPoolManager : MonoBehaviour
             snapshot.trackItems.Add(savedItems);
         }
     }
+
+    private void RestoreData(GameStateData data)
+    {
+        _currMaxObstaclesPerTrack = data.currentMaxObstaclesPerTrack;
+    }
+
+    public void RestoreSpecificItems(Track track, SavedTrackItems savedItems)
+    {
+        List<SpawnedItem> restoredItems = new List<SpawnedItem>();
+
+        for (int i = 0; i < savedItems.itemPrefabNames.Count; i++)
+        {
+            string prefabName = savedItems.itemPrefabNames[i];
+            int spawnIndex = savedItems.spawnPointIndices[i];
+
+            SpawnedItem itemToSpawn = null;
+            foreach (SpawnedItem prefab in itemPrefabs)
+            {
+                if (prefab.name == prefabName)
+                {
+                    itemToSpawn = prefab;
+                    break;
+                }
+            }
+
+            if (itemToSpawn != null)
+            {
+                SpawnedItem newItem = _objectPools[itemToSpawn].Get();
+                newItem.transform.position = track.spawnPoints[spawnIndex].position;
+                restoredItems.Add(newItem);
+            }
+        }
+
+        _trackItems.Add(track, restoredItems);
+    } 
 }
