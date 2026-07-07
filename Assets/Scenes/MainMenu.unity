@@ -547,7 +547,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1473793960}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonClicksManager, Assembly-CSharp
         m_MethodName: Click_PlayGame
         m_Mode: 1
         m_Arguments:
@@ -1056,7 +1056,7 @@ GameObject:
   - component: {fileID: 1473793959}
   - component: {fileID: 1473793960}
   m_Layer: 0
-  m_Name: MainMenuManager
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1086,17 +1086,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1473793957}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a91aaa8dbf09764428b6dffa7e51a777, type: 3}
+  m_Script: {fileID: 11500000, guid: 70e5bd1d3c6390f43bf9d84495e587f5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UIManager
-  _deathScreenFader: {fileID: 0}
-  _deathScreenCanvasGroup: {fileID: 0}
-  _finalScoreText: {fileID: 0}
-  _mainUIFader: {fileID: 0}
-  _mainUICanvasGroup: {fileID: 0}
-  _scoreText: {fileID: 0}
-  _activeIcon: {fileID: 0}
-  _queueIcon: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonClicksManager
 --- !u!1001 &1532254655
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1275,7 +1267,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1473793960}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonClicksManager, Assembly-CSharp
         m_MethodName: Click_Quit
         m_Mode: 1
         m_Arguments:

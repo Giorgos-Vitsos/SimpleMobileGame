@@ -10,6 +10,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] private CanvasGroup deathScreenCanvasGroup;
     [SerializeField] private TextMeshProUGUI finalScoreText;
 
+    [Header("Pause Screen UI (Paused)")]
+    [SerializeField] private Fade pauseScreenFader;
+    [SerializeField] private CanvasGroup pauseScreenCanvasGroup;
+    [SerializeField] private TextMeshProUGUI pauseScoreText;
+
     [Header("Gameplay UI (Main UI)")]
     [SerializeField] private Fade mainUIFader;
     [SerializeField] private CanvasGroup mainUICanvasGroup;
@@ -38,6 +43,7 @@ public class UIManager : MonoBehaviour
         GameEvents.OnPlayerDeath += ShowDeathScreen;
         GameEvents.OnScoreUpdated += UpdateScoreDisplay;
         GameEvents.OnEffectsHUDUpdated += UpdateEffectsHUD;
+        GameEvents.OnPauseStateChanged+=HandlePauseMenu;
     }
 
     private void OnDisable()
@@ -45,6 +51,7 @@ public class UIManager : MonoBehaviour
         GameEvents.OnPlayerDeath -= ShowDeathScreen;
         GameEvents.OnScoreUpdated -= UpdateScoreDisplay;
         GameEvents.OnEffectsHUDUpdated -= UpdateEffectsHUD;
+        GameEvents.OnPauseStateChanged-=HandlePauseMenu;
     }
 
     private void UpdateScoreDisplay(int newScore)
@@ -78,6 +85,44 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private void ShowPauseScreen()
+    {
+        DisableGameUI();
+
+        if (pauseScoreText != null)
+        {
+            pauseScoreText.text = $"Score: {_cachedScore}";
+        }
+
+        if (pauseScreenCanvasGroup != null)
+        {
+            pauseScreenCanvasGroup.interactable = true;
+            pauseScreenCanvasGroup.blocksRaycasts = true;
+        }
+
+        if (pauseScreenFader != null)
+        {
+            pauseScreenFader.TriggerFade(Fade.FadeType.In);
+        }
+    }
+
+    private void HidePauseScreen()
+    {
+        DisableGameUI();
+
+        if (pauseScreenCanvasGroup != null)
+        {
+            pauseScreenCanvasGroup.interactable = false;
+            pauseScreenCanvasGroup.blocksRaycasts = false;
+        }
+
+        if (pauseScreenFader != null)
+        {
+            pauseScreenFader.TriggerFade(Fade.FadeType.Out);
+        }
+        EnableGameUI();
+    }
+
     private void DisableGameUI()
     {
         if (mainUICanvasGroup != null)
@@ -89,6 +134,20 @@ public class UIManager : MonoBehaviour
         if (mainUIFader != null)
         {
             mainUIFader.TriggerFade(Fade.FadeType.Out);
+        }
+    }
+
+    private void EnableGameUI()
+    {
+        if (mainUICanvasGroup != null)
+        {
+            mainUICanvasGroup.interactable = true;
+            mainUICanvasGroup.blocksRaycasts = true;
+        }
+
+        if (mainUIFader != null)
+        {
+            mainUIFader.TriggerFade(Fade.FadeType.In);
         }
     }
 
@@ -117,30 +176,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void Click_PlayGame()
-    {
-        EventSystem.current.SetSelectedGameObject(null);
-        SceneManager.LoadScene("MainGame");
-    }
-
-    public void Click_Restart()
-    {
-        EventSystem.current.SetSelectedGameObject(null);
-        GameEvents.OnRestartRequest?.Invoke();
-    }
-
-    public void Click_Pause()
-    {
-        EventSystem.current.SetSelectedGameObject(null);
-        GameEvents.OnPauseRequested?.Invoke();
-    }
-
-    public void Click_Quit()
-    {
-        Debug.Log("Game is quitting!");
-        EventSystem.current.SetSelectedGameObject(null);
-        Application.Quit();
-    }
+    
 
     private void HandleIconFlashing()
     {
@@ -153,6 +189,18 @@ public class UIManager : MonoBehaviour
         else if (!_isFlashing && activeIcon.sprite != null)
         {
             activeIcon.color = new Color(1, 1, 1, 1);
+        }
+    }
+
+    private void HandlePauseMenu(bool state)
+    {
+        if (state)
+        {
+            ShowPauseScreen();
+        }
+        else
+        {
+            HidePauseScreen();
         }
     }
 }

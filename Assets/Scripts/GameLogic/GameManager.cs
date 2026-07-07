@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
         GameEvents.OnPauseRequested += TogglePause;
         GameEvents.OnRestoreSaveData += RestoreData;
         GameEvents.OnGatherSaveData += InjectData;
+        GameEvents.OnSaveRequest+=HandleSaveGame;
     }
 
     private void OnDisable()
@@ -38,6 +39,7 @@ public class GameManager : MonoBehaviour
         GameEvents.OnPauseRequested -= TogglePause;
         GameEvents.OnRestoreSaveData -= RestoreData;
         GameEvents.OnGatherSaveData -= InjectData;
+        GameEvents.OnSaveRequest-=HandleSaveGame;
     }
 
     private void HandleTrackCleared()
@@ -65,11 +67,7 @@ public class GameManager : MonoBehaviour
     {
         if (Keyboard.current == null) return;
 
-        if (Keyboard.current.sKey.wasPressedThisFrame)
-        {
-            HandleSaveGame();
-        }
-        else if (Keyboard.current.lKey.wasPressedThisFrame)
+        if (Keyboard.current.lKey.wasPressedThisFrame)
         {
             HandleLoadGame();
         }
