@@ -6,31 +6,31 @@ using UnityEngine.EventSystems;
 public class UIManager : MonoBehaviour
 {
     [Header("Death Screen UI (Game Over)")]
-    [SerializeField] private Fade _deathScreenFader;
-    [SerializeField] private CanvasGroup _deathScreenCanvasGroup;
-    [SerializeField] private TextMeshProUGUI _finalScoreText;
+    [SerializeField] private Fade deathScreenFader;
+    [SerializeField] private CanvasGroup deathScreenCanvasGroup;
+    [SerializeField] private TextMeshProUGUI finalScoreText;
 
     [Header("Gameplay UI (Main UI)")]
-    [SerializeField] private Fade _mainUIFader;
-    [SerializeField] private CanvasGroup _mainUICanvasGroup;
-    [SerializeField] private TextMeshProUGUI _scoreText;
+    [SerializeField] private Fade mainUIFader;
+    [SerializeField] private CanvasGroup mainUICanvasGroup;
+    [SerializeField] private TextMeshProUGUI scoreText;
 
     [Header("PowerUp HUD")]
-    [SerializeField] private UnityEngine.UI.Image _activeIcon;
-    [SerializeField] private UnityEngine.UI.Image _queueIcon;
-
-    [Header("PowerUp Fallback Icons (For Loaded Saves)")]
-    [SerializeField] private Sprite _shieldFallbackIcon;
-    [SerializeField] private Sprite _slowMoFallbackIcon;
-    [SerializeField] private Sprite _speedFallbackIcon;
-    [SerializeField] private Sprite _combinedFallbackIcon; 
+    [SerializeField] private UnityEngine.UI.Image activeIcon;
+    [SerializeField] private UnityEngine.UI.Image queueIcon;
 
     private int _cachedScore = 0;
+    private bool _isFlashing = false;
 
     private void Start()
     {
-        if (_scoreText != null) _scoreText.text = "Score: 0";
-        if (_finalScoreText != null) _finalScoreText.text = "Score: 0";
+        if (scoreText != null) scoreText.text = "Score: 0";
+        if (finalScoreText != null) finalScoreText.text = "Score: 0";
+    }
+
+    private void Update()
+    {
+        HandleIconFlashing();
     }
 
     private void OnEnable()
@@ -50,88 +50,71 @@ public class UIManager : MonoBehaviour
     private void UpdateScoreDisplay(int newScore)
     {
         _cachedScore = newScore;
-        
-        if (_scoreText != null)
+
+        if (scoreText != null)
         {
-            _scoreText.text = $"Score: {_cachedScore}";
+            scoreText.text = $"Score: {_cachedScore}";
         }
     }
 
     private void ShowDeathScreen()
     {
         DisableGameUI();
-        
-        if (_finalScoreText != null)
+
+        if (finalScoreText != null)
         {
-            _finalScoreText.text = $"Score: {_cachedScore}";
+            finalScoreText.text = $"Score: {_cachedScore}";
         }
-        
-        if (_deathScreenCanvasGroup != null)
+
+        if (deathScreenCanvasGroup != null)
         {
-            _deathScreenCanvasGroup.interactable = true;
-            _deathScreenCanvasGroup.blocksRaycasts = true;
+            deathScreenCanvasGroup.interactable = true;
+            deathScreenCanvasGroup.blocksRaycasts = true;
         }
-        
-        if (_deathScreenFader != null)
+
+        if (deathScreenFader != null)
         {
-            _deathScreenFader.TriggerFade(Fade.FadeType.In);
+            deathScreenFader.TriggerFade(Fade.FadeType.In);
         }
     }
 
     private void DisableGameUI()
     {
-        if (_mainUICanvasGroup != null)
+        if (mainUICanvasGroup != null)
         {
-            _mainUICanvasGroup.interactable = false;
-            _mainUICanvasGroup.blocksRaycasts = false;
+            mainUICanvasGroup.interactable = false;
+            mainUICanvasGroup.blocksRaycasts = false;
         }
 
-        if (_mainUIFader != null)
+        if (mainUIFader != null)
         {
-            _mainUIFader.TriggerFade(Fade.FadeType.Out);
+            mainUIFader.TriggerFade(Fade.FadeType.Out);
         }
     }
 
-    private void UpdateEffectsHUD(StatusEffect active, StatusEffect queued)
+    private void UpdateEffectsHUD(Sprite activeSprite, Sprite queuedSprite, bool isWarning)
     {
-        Sprite activeSprite = GetIconForEffect(active);
+        _isFlashing = isWarning;
         if (activeSprite != null)
         {
-            _activeIcon.sprite = activeSprite;
-            _activeIcon.color = new Color(1, 1, 1, 1);
+            activeIcon.sprite = activeSprite;
         }
         else
         {
-            _activeIcon.sprite = null;
-            _activeIcon.color = new Color(1, 1, 1, 0);
+            activeIcon.sprite = null;
+            activeIcon.color = new Color(1, 1, 1, 0);
         }
 
-        Sprite queueSprite = GetIconForEffect(queued);
-        if (queueSprite != null)
+        if (queuedSprite != null)
         {
-            _queueIcon.sprite = queueSprite;
-            _queueIcon.color = new Color(1, 1, 1, 1);
+            queueIcon.sprite = queuedSprite;
+            queueIcon.color = new Color(1, 1, 1, 1);
         }
         else
         {
-            _queueIcon.sprite = null;
-            _queueIcon.color = new Color(1, 1, 1, 0);
+            queueIcon.sprite = null;
+            queueIcon.color = new Color(1, 1, 1, 0);
         }
-    }
-
-    private Sprite GetIconForEffect(StatusEffect effect)
-    {
-        if (effect == null) return null;
-
-   
-        if (effect.Icon != null) return effect.Icon;
-
-        if (effect is ShieldEffect) return _shieldFallbackIcon;
-        if (effect is SlowMoEffect) return _slowMoFallbackIcon;
-        if (effect is SpeedEffect) return _speedFallbackIcon;
-        if (effect is CombinedEffect) return _combinedFallbackIcon;
-
-        return null;
     }
 
     public void Click_PlayGame()
@@ -157,5 +140,19 @@ public class UIManager : MonoBehaviour
         Debug.Log("Game is quitting!");
         EventSystem.current.SetSelectedGameObject(null);
         Application.Quit();
+    }
+
+    private void HandleIconFlashing()
+    {
+        if (_isFlashing && activeIcon.sprite != null)
+        {
+            float wave = (Mathf.Sin(Time.unscaledTime * 15f) + 1f) / 2f;
+            float alpha = Mathf.Lerp(0.2f, 1f, wave);
+            activeIcon.color = new Color(1, 1, 1, alpha);
+        }
+        else if (!_isFlashing && activeIcon.sprite != null)
+        {
+            activeIcon.color = new Color(1, 1, 1, 1);
+        }
     }
 }

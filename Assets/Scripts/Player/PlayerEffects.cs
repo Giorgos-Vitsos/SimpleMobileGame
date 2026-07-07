@@ -13,6 +13,8 @@ public class PlayerEffects : MonoBehaviour
     private StatusEffect _activeEffect = null;
     private bool _gamePaused=false;
     private float _lastEffectTime = -1f;
+    private const float WARNING_TIME = 2f;
+    private bool _isWarningSent = false;
 
     private void Awake()
     {
@@ -59,6 +61,7 @@ public class PlayerEffects : MonoBehaviour
     private void StartEffect(StatusEffect effect)
     {
         _activeEffect = effect;
+        _isWarningSent = false;
         _activeEffect.OnApplyEffect(this); 
         UpdateHUD();
     }
@@ -80,13 +83,22 @@ public class PlayerEffects : MonoBehaviour
         }
         
         _activeEffect.remainingTime -= Time.unscaledDeltaTime;
+        if (!_isWarningSent && _activeEffect.remainingTime <= WARNING_TIME)
+            {
+                _isWarningSent = true;
+                UpdateHUD();
+            }
         if (_activeEffect.remainingTime <= 0) StopEffect();
     }
 
     private void UpdateHUD()
     {
-        StatusEffect nextInQueue = _effectQueue.Count > 0 ? _effectQueue.Peek() : null;
-        GameEvents.OnEffectsHUDUpdated?.Invoke(_activeEffect, nextInQueue);
+        Sprite activeSprite = _activeEffect?.Icon;
+        Sprite queueSprite = _effectQueue.Count > 0 ? _effectQueue.Peek().Icon : null;
+        
+        bool isWarning = _isWarningSent;
+
+        GameEvents.OnEffectsHUDUpdated?.Invoke(activeSprite, queueSprite, isWarning);
     }
 
     private void StopEffects(bool state)=>_gamePaused=state;
@@ -140,20 +152,22 @@ public class PlayerEffects : MonoBehaviour
 
     private StatusEffect RebuildEffect(SavedEffectData data)
     {
+        Sprite loadedIcon = Resources.Load<Sprite>(data.type.ToString());
+
         switch (data.type)
         {
             case EffectType.Shield:
-                var shield = new ShieldEffect(data.remainingTime, null);
+                var shield = new ShieldEffect(data.remainingTime, loadedIcon);
                 shield.remainingTime = data.remainingTime;
                 return shield;
                 
             case EffectType.SlowMo:
-                var slow = new SlowMoEffect(data.remainingTime, data.floatParameter, null);
+                var slow = new SlowMoEffect(data.remainingTime, data.floatParameter, loadedIcon);
                 slow.remainingTime = data.remainingTime;
                 return slow;
                 
             case EffectType.Speed:
-                var speed = new SpeedEffect(data.remainingTime, data.floatParameter, null);
+                var speed = new SpeedEffect(data.remainingTime, data.floatParameter, loadedIcon);
                 speed.remainingTime = data.remainingTime;
                 return speed;
                 
@@ -169,7 +183,7 @@ public class PlayerEffects : MonoBehaviour
                     };
                     nested.Add(RebuildEffect(tempFormat));
                 }
-                var combined = new CombinedEffect(data.remainingTime, null, nested.ToArray());
+                var combined = new CombinedEffect(data.remainingTime, loadedIcon, nested.ToArray());
                 combined.remainingTime = data.remainingTime;
                 return combined;
                 
