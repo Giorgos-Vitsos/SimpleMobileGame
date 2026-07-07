@@ -106,14 +106,16 @@ public class PlayerEffects : MonoBehaviour
     private void InjectData(GameStateData snapshot)
     {
 
-        if (_activeEffect != null)
+        bool _isSlowMo=_activeEffect is SlowMoEffect;
+
+        if (_activeEffect != null && !_isSlowMo)
         {
             _activeEffect.OnRemoveEffect(this);
         }
 
         snapshot.playerCurrentSpeed = CurrentSpeed;
 
-        if (_activeEffect != null)
+        if (_activeEffect != null && !_isSlowMo)
         {
             _activeEffect.OnApplyEffect(this);
         }
