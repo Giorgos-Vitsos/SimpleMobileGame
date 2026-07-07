@@ -19,6 +19,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Image _activeIcon;
     [SerializeField] private UnityEngine.UI.Image _queueIcon;
 
+    [Header("PowerUp Fallback Icons (For Loaded Saves)")]
+    [SerializeField] private Sprite _shieldFallbackIcon;
+    [SerializeField] private Sprite _slowMoFallbackIcon;
+    [SerializeField] private Sprite _speedFallbackIcon;
+    [SerializeField] private Sprite _combinedFallbackIcon; 
+
     private int _cachedScore = 0;
 
     private void Start()
@@ -88,9 +94,10 @@ public class UIManager : MonoBehaviour
 
     private void UpdateEffectsHUD(StatusEffect active, StatusEffect queued)
     {
-        if (active != null && active.Icon != null)
+        Sprite activeSprite = GetIconForEffect(active);
+        if (activeSprite != null)
         {
-            _activeIcon.sprite = active.Icon;
+            _activeIcon.sprite = activeSprite;
             _activeIcon.color = new Color(1, 1, 1, 1);
         }
         else
@@ -99,9 +106,10 @@ public class UIManager : MonoBehaviour
             _activeIcon.color = new Color(1, 1, 1, 0);
         }
 
-        if (queued != null && queued.Icon != null)
+        Sprite queueSprite = GetIconForEffect(queued);
+        if (queueSprite != null)
         {
-            _queueIcon.sprite = queued.Icon;
+            _queueIcon.sprite = queueSprite;
             _queueIcon.color = new Color(1, 1, 1, 1);
         }
         else
@@ -109,6 +117,21 @@ public class UIManager : MonoBehaviour
             _queueIcon.sprite = null;
             _queueIcon.color = new Color(1, 1, 1, 0);
         }
+    }
+
+    private Sprite GetIconForEffect(StatusEffect effect)
+    {
+        if (effect == null) return null;
+
+   
+        if (effect.Icon != null) return effect.Icon;
+
+        if (effect is ShieldEffect) return _shieldFallbackIcon;
+        if (effect is SlowMoEffect) return _slowMoFallbackIcon;
+        if (effect is SpeedEffect) return _speedFallbackIcon;
+        if (effect is CombinedEffect) return _combinedFallbackIcon;
+
+        return null;
     }
 
     public void Click_PlayGame()

@@ -11,11 +11,11 @@ public class GameStateData
 
     public float playerCurrentSpeed;
     public SavedEffectData activeEffect;
-    public List<SavedEffectData> effectQueue = new List<SavedEffectData>();
+    public List<SavedEffectData> effectQueue = new();
 
-    public List<int> trackZPositionsRounded = new List<int>();
+    public List<int> trackZPositionsRounded = new();
 
-    public List<SavedTrackItems> trackItems = new List<SavedTrackItems>();
+    public List<SavedTrackItems> trackItems = new();
 }
 
 [System.Serializable]
@@ -23,8 +23,8 @@ public class SavedTrackItems
 {
     
     public int trackZPositionRounded; 
-    public List<string> itemPrefabNames = new List<string>();
-    public List<int> spawnPointIndices = new List<int>();
+    public List<string> itemPrefabNames = new ();
+    public List<int> spawnPointIndices = new ();
 }
 
 public enum EffectType { Shield, SlowMo, Speed, Combined }
@@ -34,10 +34,15 @@ public class SavedEffectData
 {
     public EffectType type;
     public float remainingTime;
+    public float floatParameter;
     
-    // Αποθηκεύει το _speed Ή το _slowDownTarget ανάλογα το effect
-    public float floatParameter; 
-    
-    // Αν είναι CombinedEffect, αποθηκεύει τα υπο-effects του
-    public List<SavedEffectData> nestedEffects = new List<SavedEffectData>(); 
+    public List<SavedSubEffectData> nestedEffects = new List<SavedSubEffectData>(); 
+}
+
+[System.Serializable]
+public class SavedSubEffectData
+{
+    public EffectType type;
+    public float remainingTime;
+    public float floatParameter;
 }

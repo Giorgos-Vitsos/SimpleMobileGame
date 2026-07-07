@@ -19,17 +19,23 @@ public class SpawnedPoolManager : MonoBehaviour
     private Dictionary<SpawnedItem, IObjectPool<SpawnedItem>> _objectPools = new();
     private List<SpawnedItem> _obstaclePrefabs = new();
     private List<SpawnedItem> _powerUpPrefabs = new();
+    private Dictionary<string, SpawnedItem> _prefabLookup = new();
 
     private int _currMaxObstaclesPerTrack;
 
     private void Awake()
     {
         _currMaxObstaclesPerTrack = initialMaxObstaclesPerTrack;
-        
+
+        foreach (SpawnedItem prefab in itemPrefabs)
+        {
+            _prefabLookup[prefab.name] = prefab;
+        }
+
         foreach (var prefab in itemPrefabs)
         {
-            _objectPools[prefab] = new ObjectPool<SpawnedItem>(() => createItem(prefab), OnGet, OnRelease, OnDestroyItem, false, defaultCap, maxSize);
-            
+            _objectPools[prefab] = new ObjectPool<SpawnedItem>(() => CreateItem(prefab), OnGet, OnRelease, OnDestroyItem, false, defaultCap, maxSize);
+
             if (prefab.Type == SpawnedItem.ItemType.Obstacle)
             {
                 _obstaclePrefabs.Add(prefab);
@@ -44,15 +50,15 @@ public class SpawnedPoolManager : MonoBehaviour
     private void OnEnable()
     {
         GameEvents.OnDifficultyIncreased += HandleDifficultySpike;
-        GameEvents.OnGatherSaveData+=InjectData;
-         GameEvents.OnRestoreSaveData+=RestoreData;
+        GameEvents.OnGatherSaveData += InjectData;
+        GameEvents.OnRestoreSaveData += RestoreData;
     }
 
     private void OnDisable()
     {
         GameEvents.OnDifficultyIncreased -= HandleDifficultySpike;
-        GameEvents.OnGatherSaveData-=InjectData;
-         GameEvents.OnRestoreSaveData-=RestoreData;
+        GameEvents.OnGatherSaveData -= InjectData;
+        GameEvents.OnRestoreSaveData -= RestoreData;
     }
 
     private void HandleDifficultySpike(int extraObstacles)
@@ -64,7 +70,7 @@ public class SpawnedPoolManager : MonoBehaviour
     private void OnRelease(SpawnedItem item) => item.OnDespawn();
     private void OnGet(SpawnedItem item) => item.OnSpawn();
 
-    private SpawnedItem createItem(SpawnedItem prefab)
+    private SpawnedItem CreateItem(SpawnedItem prefab)
     {
         SpawnedItem item = Instantiate(prefab);
         item.PrefabSource = prefab;
@@ -78,11 +84,11 @@ public class SpawnedPoolManager : MonoBehaviour
         var powerUpCount = 0;
         List<SpawnedItem> currItems = new();
         List<Transform> points = new(track.spawnPoints);
-        
+
         ShuffleUtility.Shuffle(points);
 
         Dictionary<Transform, int> obstaclesPerRow = new();
-        
+
         foreach (Transform point in points)
         {
             SpawnedItem itemToSpawn = null;
@@ -102,7 +108,7 @@ public class SpawnedPoolManager : MonoBehaviour
                     obstaclesPerRow[rowParent]++;
                 }
             }
-            
+
             if (itemToSpawn == null)
             {
                 if (powerUpCount < 1 && Random.value <= powerUpChance)
@@ -120,16 +126,16 @@ public class SpawnedPoolManager : MonoBehaviour
             newItem.transform.position = point.position;
             currItems.Add(newItem);
         }
-        
+
         _trackItems.Add(track, currItems);
     }
 
     private SpawnedItem GetRandItem(SpawnedItem.ItemType itemType)
     {
         List<SpawnedItem> candidates = (itemType == SpawnedItem.ItemType.Obstacle) ? _obstaclePrefabs : _powerUpPrefabs;
-        
+
         if (candidates.Count == 0) return null;
-        
+
         return candidates[Random.Range(0, candidates.Count)];
     }
 
@@ -153,16 +159,16 @@ public class SpawnedPoolManager : MonoBehaviour
             Track track = entry.Key;
             List<SpawnedItem> items = entry.Value;
 
-            if (items.Count == 0) continue; 
+            if (items.Count == 0) continue;
 
-            SavedTrackItems savedItems = new SavedTrackItems();
+            SavedTrackItems savedItems = new();
             savedItems.trackZPositionRounded = Mathf.RoundToInt(track.transform.position.z);
 
             foreach (SpawnedItem item in items)
             {
-    
+
                 string prefabName = item.PrefabSource.name;
-                
+
                 int spawnIndex = -1;
                 for (int i = 0; i < track.spawnPoints.Length; i++)
                 {
@@ -178,7 +184,7 @@ public class SpawnedPoolManager : MonoBehaviour
                     savedItems.spawnPointIndices.Add(spawnIndex);
                 }
             }
-            
+
             snapshot.trackItems.Add(savedItems);
         }
     }
@@ -190,21 +196,18 @@ public class SpawnedPoolManager : MonoBehaviour
 
     public void RestoreSpecificItems(Track track, SavedTrackItems savedItems)
     {
-        List<SpawnedItem> restoredItems = new List<SpawnedItem>();
+        List<SpawnedItem> restoredItems = new();
 
         for (int i = 0; i < savedItems.itemPrefabNames.Count; i++)
         {
             string prefabName = savedItems.itemPrefabNames[i];
             int spawnIndex = savedItems.spawnPointIndices[i];
 
-            SpawnedItem itemToSpawn = null;
-            foreach (SpawnedItem prefab in itemPrefabs)
+            if (_prefabLookup.TryGetValue(prefabName, out SpawnedItem itemToSpawn))
             {
-                if (prefab.name == prefabName)
-                {
-                    itemToSpawn = prefab;
-                    break;
-                }
+                SpawnedItem newItem = _objectPools[itemToSpawn].Get();
+                newItem.transform.position = track.spawnPoints[spawnIndex].position;
+                restoredItems.Add(newItem);
             }
 
             if (itemToSpawn != null)
@@ -216,5 +219,5 @@ public class SpawnedPoolManager : MonoBehaviour
         }
 
         _trackItems.Add(track, restoredItems);
-    } 
+    }
 }

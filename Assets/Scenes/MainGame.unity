@@ -1376,6 +1376,10 @@ MonoBehaviour:
   _scoreText: {fileID: 591847281}
   _activeIcon: {fileID: 1376938691}
   _queueIcon: {fileID: 444646554}
+  _shieldFallbackIcon: {fileID: 21300000, guid: 5c5c979308eb15544aee0caef6f591f6, type: 3}
+  _slowMoFallbackIcon: {fileID: 21300000, guid: d0615d117706b524aabea768e2e33f50, type: 3}
+  _speedFallbackIcon: {fileID: 21300000, guid: 4bec1f04a2826114daf4dc57271e45fa, type: 3}
+  _combinedFallbackIcon: {fileID: 21300000, guid: 4bec1f04a2826114daf4dc57271e45fa, type: 3}
 --- !u!1 &1088889220
 GameObject:
   m_ObjectHideFlags: 0
@@ -3107,7 +3111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrackPoolManager
   TrackLength: 20
-  defaultCap: 10
+  defaultCap: 5
   maxSize: 100
   trackPrefab: {fileID: -3281049841384140623, guid: 0fbca6f193854a7408e620a1c38472b6, type: 3}
   playerTransform: {fileID: 1302102989}

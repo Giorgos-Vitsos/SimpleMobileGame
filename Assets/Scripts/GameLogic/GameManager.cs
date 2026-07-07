@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int tracksUntilDifficultyIncrease = 10;
 
     private int _score = 0;
-    private PlayerEffects _playerEffects; 
+    private PlayerEffects _playerEffects;
     private bool _gamePaused = false;
     private float _prevTimeScale = 1;
     private bool _firstTrack = true;
@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
         GameEvents.OnRestartRequest += ReloadGame;
         GameEvents.OnPauseRequested += TogglePause;
         GameEvents.OnRestoreSaveData += RestoreData;
+        GameEvents.OnGatherSaveData += InjectData;
     }
 
     private void OnDisable()
@@ -36,6 +37,7 @@ public class GameManager : MonoBehaviour
         GameEvents.OnRestartRequest -= ReloadGame;
         GameEvents.OnPauseRequested -= TogglePause;
         GameEvents.OnRestoreSaveData -= RestoreData;
+        GameEvents.OnGatherSaveData -= InjectData;
     }
 
     private void HandleTrackCleared()
@@ -46,9 +48,9 @@ public class GameManager : MonoBehaviour
             return;
         }
         _score++;
-        
+
         GameEvents.OnScoreUpdated?.Invoke(_score);
-        
+
         if (_score % tracksUntilDifficultyIncrease == 0 && _score != 0)
         {
             if (_playerEffects != null)
@@ -108,7 +110,6 @@ public class GameManager : MonoBehaviour
     private void HandleSaveGame()
     {
         GameStateData snapshot = new();
-        snapshot.currentScore = _score;
         GameEvents.OnGatherSaveData?.Invoke(snapshot);
         SaveManager.SaveGameState(snapshot);
     }
@@ -122,9 +123,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void InjectData(GameStateData snapshot)
+    {
+        snapshot.currentScore = _score;
+    }
     private void RestoreData(GameStateData data)
     {
         _score = data.currentScore;
-        GameEvents.OnScoreUpdated?.Invoke(_score); 
+        GameEvents.OnScoreUpdated?.Invoke(_score);
     }
 }

@@ -12,6 +12,7 @@ public class PlayerEffects : MonoBehaviour
     private Queue<StatusEffect> _effectQueue = new();
     private StatusEffect _activeEffect = null;
     private bool _gamePaused=false;
+    private float _lastEffectTime = -1f;
 
     private void Awake()
     {
@@ -48,6 +49,8 @@ public class PlayerEffects : MonoBehaviour
 
     public void AddEffect(StatusEffect effect)
     {
+        if (Time.unscaledTime - _lastEffectTime < 0.1f) return;
+        _lastEffectTime = Time.unscaledTime;
         if (_activeEffect == null) StartEffect(effect);
         else _effectQueue.Enqueue(effect);
         UpdateHUD();
@@ -96,10 +99,8 @@ public class PlayerEffects : MonoBehaviour
             _activeEffect.OnRemoveEffect(this);
         }
 
-        // 2. Save the true, unmodified speed
         snapshot.playerCurrentSpeed = CurrentSpeed;
 
-        // 3. Instantly re-apply the effect so gameplay continues uninterrupted
         if (_activeEffect != null)
         {
             _activeEffect.OnApplyEffect(this);
@@ -116,21 +117,18 @@ public class PlayerEffects : MonoBehaviour
 
     private void RestoreData(GameStateData data)
     {
-        // 1. Καθαρίζουμε τα πάντα
+
         if (_activeEffect != null) StopEffect();
         _effectQueue.Clear();
 
-        // 2. Επαναφορά base ταχύτητας
         CurrentSpeed = data.playerCurrentSpeed;
 
-        // 3. Επαναφορά Active Effect
         if (data.activeEffect != null)
         {
             StatusEffect loadedEffect = RebuildEffect(data.activeEffect);
             if (loadedEffect != null) StartEffect(loadedEffect);
         }
 
-        // 4. Επαναφορά Ουράς
         foreach (var savedData in data.effectQueue)
         {
             StatusEffect loadedEffect = RebuildEffect(savedData);
@@ -140,11 +138,8 @@ public class PlayerEffects : MonoBehaviour
         UpdateHUD();
     }
 
-    // Factory method που ξαναφτιάχνει το σωστό αντικείμενο από το JSON
     private StatusEffect RebuildEffect(SavedEffectData data)
     {
-        // Σημείωση: Περνάμε null για το Sprite icon κατά το Load, διότι τα Sprites 
-        // δεν αποθηκεύονται. Το HUD σου πρέπει να ελέγχει αν icon != null.
         switch (data.type)
         {
             case EffectType.Shield:
@@ -166,7 +161,13 @@ public class PlayerEffects : MonoBehaviour
                 List<StatusEffect> nested = new List<StatusEffect>();
                 foreach (var nestedData in data.nestedEffects)
                 {
-                    nested.Add(RebuildEffect(nestedData));
+                    var tempFormat = new SavedEffectData 
+                    { 
+                        type = nestedData.type, 
+                        remainingTime = nestedData.remainingTime, 
+                        floatParameter = nestedData.floatParameter 
+                    };
+                    nested.Add(RebuildEffect(tempFormat));
                 }
                 var combined = new CombinedEffect(data.remainingTime, null, nested.ToArray());
                 combined.remainingTime = data.remainingTime;

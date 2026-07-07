@@ -121,7 +121,14 @@ public class CombinedEffect : StatusEffect
         var data = new SavedEffectData { type = EffectType.Combined, remainingTime = remainingTime };
         foreach (var effect in _effects)
         {
-            data.nestedEffects.Add(effect.GetSaveData());
+            
+            var rawData = effect.GetSaveData();
+            data.nestedEffects.Add(new SavedSubEffectData 
+            { 
+                type = rawData.type, 
+                remainingTime = rawData.remainingTime, 
+                floatParameter = rawData.floatParameter 
+            });
         }
         return data;
     }

@@ -13,7 +13,7 @@ public class TrackPoolManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Track trackPrefab;
-    [SerializeField] private Transform playerTransform; 
+    [SerializeField] private Transform playerTransform;
     [SerializeField] private SpawnedPoolManager itemManager;
 
     private IObjectPool<Track> _trackPool;
@@ -22,16 +22,16 @@ public class TrackPoolManager : MonoBehaviour
 
     private void Awake()
     {
-        _trackPool = new ObjectPool<Track>(createTrack, OnGet, OnRelease, OnDestroyTrack, false, defaultCap, maxSize);
+        _trackPool = new ObjectPool<Track>(CreateTrack, OnGet, OnRelease, OnDestroyTrack, false, defaultCap, maxSize);
     }
 
     private void Start()
     {
-        var isInitial=true;
+        var isInitial = true;
         for (int i = 0; i < defaultCap; i++)
         {
             SpawnNextTrack(isInitial);
-            isInitial=false;
+            isInitial = false;
         }
     }
 
@@ -42,42 +42,42 @@ public class TrackPoolManager : MonoBehaviour
         newTrack.SetupTrack();
         _spawnPos += TrackLength;
         _activeTracks.Enqueue(newTrack);
-        
+
         if (!isInitial) itemManager.Populate(newTrack);
     }
 
     private void OnEnable()
     {
-        GameEvents.OnGatherSaveData+=InjectData;
-        GameEvents.OnRestoreSaveData+=RestoreData;
+        GameEvents.OnGatherSaveData += InjectData;
+        GameEvents.OnRestoreSaveData += RestoreData;
     }
 
-    private void Disable()
+    private void OnDisable()
     {
-        GameEvents.OnGatherSaveData-=InjectData;
-        GameEvents.OnRestoreSaveData-=RestoreData;
+        GameEvents.OnGatherSaveData -= InjectData;
+        GameEvents.OnRestoreSaveData -= RestoreData;
     }
 
     private void OnDestroyTrack(Track track) => Destroy(track.gameObject);
     private void OnRelease(Track track) => track.OnDespawn();
-    private Track createTrack() => Instantiate(trackPrefab);
+    private Track CreateTrack() => Instantiate(trackPrefab);
     private void OnGet(Track track) => track.OnSpawn();
 
     private void HandleTracks()
     {
         if (_activeTracks.Count == 0) return;
-        
+
         Track oldestTrack = _activeTracks.Peek();
-        
-        
-        if (oldestTrack.transform.position.z + TrackLength/2+2 < playerTransform.position.z)
+
+
+        if (oldestTrack.transform.position.z + TrackLength / 2 + 2 < playerTransform.position.z)
         {
             itemManager.ClearItems(oldestTrack);
             _activeTracks.Dequeue();
             _trackPool.Release(oldestTrack);
-            
-            GameEvents.OnTrackCleared?.Invoke(); 
-            
+
+            GameEvents.OnTrackCleared?.Invoke();
+
             SpawnNextTrack(false);
         }
     }
@@ -87,7 +87,7 @@ public class TrackPoolManager : MonoBehaviour
 
     private void InjectData(GameStateData snapshot)
     {
-        snapshot.nextSpawnPos=_spawnPos;
+        snapshot.nextSpawnPos = _spawnPos;
         foreach (Track track in _activeTracks)
         {
             snapshot.trackZPositionsRounded.Add(Mathf.RoundToInt(track.transform.position.z));
@@ -113,7 +113,7 @@ public class TrackPoolManager : MonoBehaviour
             _activeTracks.Enqueue(loadedTrack);
 
             SavedTrackItems savedItems = data.trackItems.Find(x => x.trackZPositionRounded == savedZRounded);
-            
+
             if (savedItems != null)
             {
                 itemManager.RestoreSpecificItems(loadedTrack, savedItems);
