@@ -1042,6 +1042,7 @@ GameObject:
   - component: {fileID: 515055407}
   - component: {fileID: 515055406}
   - component: {fileID: 515055405}
+  - component: {fileID: 515055409}
   m_Layer: 0
   m_Name: Button_Restart
   m_TagString: Untagged
@@ -1185,6 +1186,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 515055403}
   m_CullTransparentMesh: 1
+--- !u!114 &515055409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 515055403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b51566906f6ffc45ab06698a2f54a8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonAudio
 --- !u!1 &520901097
 GameObject:
   m_ObjectHideFlags: 0
@@ -2126,6 +2139,7 @@ GameObject:
   - component: {fileID: 1033860089}
   - component: {fileID: 1033860088}
   - component: {fileID: 1033860087}
+  - component: {fileID: 1033860091}
   m_Layer: 0
   m_Name: Button_MainMenu
   m_TagString: Untagged
@@ -2269,6 +2283,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1033860085}
   m_CullTransparentMesh: 1
+--- !u!114 &1033860091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033860085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b51566906f6ffc45ab06698a2f54a8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonAudio
 --- !u!1 &1064036708
 GameObject:
   m_ObjectHideFlags: 0
@@ -2411,6 +2437,7 @@ GameObject:
   - component: {fileID: 1066477656}
   - component: {fileID: 1066477655}
   - component: {fileID: 1066477654}
+  - component: {fileID: 1066477658}
   m_Layer: 0
   m_Name: Button_Save
   m_TagString: Untagged
@@ -2554,6 +2581,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1066477652}
   m_CullTransparentMesh: 1
+--- !u!114 &1066477658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1066477652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b51566906f6ffc45ab06698a2f54a8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonAudio
 --- !u!1 &1088889220
 GameObject:
   m_ObjectHideFlags: 0
@@ -3808,6 +3847,7 @@ GameObject:
   - component: {fileID: 1518280196}
   - component: {fileID: 1518280195}
   - component: {fileID: 1518280198}
+  - component: {fileID: 1518280199}
   m_Layer: 0
   m_Name: Button_Quit
   m_TagString: Untagged
@@ -3951,6 +3991,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1518280199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1518280193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b51566906f6ffc45ab06698a2f54a8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonAudio
 --- !u!1 &1720925559
 GameObject:
   m_ObjectHideFlags: 0
@@ -4091,6 +4143,7 @@ GameObject:
   - component: {fileID: 1754411497}
   - component: {fileID: 1754411496}
   - component: {fileID: 1754411495}
+  - component: {fileID: 1754411499}
   m_Layer: 0
   m_Name: Button_Pause
   m_TagString: Untagged
@@ -4234,6 +4287,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1754411493}
   m_CullTransparentMesh: 1
+--- !u!114 &1754411499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1754411493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b51566906f6ffc45ab06698a2f54a8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonAudio
 --- !u!1 &1776827257
 GameObject:
   m_ObjectHideFlags: 0
@@ -4325,6 +4390,7 @@ GameObject:
   - component: {fileID: 2061338376}
   - component: {fileID: 2061338375}
   - component: {fileID: 2061338378}
+  - component: {fileID: 2061338379}
   m_Layer: 0
   m_Name: Button_Restart
   m_TagString: Untagged
@@ -4468,6 +4534,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2061338379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2061338373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b51566906f6ffc45ab06698a2f54a8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonAudio
 --- !u!1 &2061751989
 GameObject:
   m_ObjectHideFlags: 0
@@ -4697,6 +4775,7 @@ GameObject:
   - component: {fileID: 2138795857}
   - component: {fileID: 2138795856}
   - component: {fileID: 2138795855}
+  - component: {fileID: 2138795859}
   m_Layer: 0
   m_Name: Button_Resume
   m_TagString: Untagged
@@ -4815,7 +4894,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.1333333, g: 0.5450981, b: 0.1333333, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4840,6 +4919,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2138795853}
   m_CullTransparentMesh: 1
+--- !u!114 &2138795859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2138795853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b51566906f6ffc45ab06698a2f54a8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonAudio
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
 using System.Collections.Generic;
-using TMPro;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
@@ -10,21 +10,21 @@ public class AudioManager : MonoBehaviour
     [Header("Mixer & Sources")]
     public AudioMixer mainMixer;
     public AudioSource musicSource;
-    public AudioSource sfxSource;         // Ηχείο για Νομίσματα, UI (Κανονικός χρόνος)
-    public AudioSource scaledSfxSource;   // Ηχείο για Dodge, Crashes (Επηρεάζεται από Time.timeScale)
-    public AudioSource runLoopSource;     // Ηχείο για τα βήματα (Επηρεάζεται από Ταχύτητα & Time.timeScale)
+    public AudioSource sfxSource; 
+    public AudioSource scaledSfxSource; 
+    public AudioSource runLoopSource; 
 
     [Header("Audio Library (Sound Bank)")]
     public AudioClip mainMenuMusic;
     public List<SoundGroup> sfxLibrary = new List<SoundGroup>();
 
-    // Αποθηκεύει το pitch των βημάτων με βάση την ταχύτητα, πριν μπει ο υπολογισμός του slow-motion
     private float _baseFootstepPitch = 1f;
     private bool _playerIsDead=false;
+    private bool _gamePaused=false;
 
     private void Awake()
     {
-        // Εξασφαλίζουμε ότι υπάρχει μόνο ένας AudioManager σε όλο το παιχνίδι
+        
         if (Instance == null)
         {
             Instance = this;
@@ -43,6 +43,8 @@ public class AudioManager : MonoBehaviour
         GameEvents.OnSpeedChanged += HandleSpeedAudio;
         GameEvents.OnPlayerDeath += HandleDeath;
         GameEvents.OnRestartRequest += HandleRestart;
+        GameEvents.OnPauseStateChanged += HandlePause; 
+        SceneManager.sceneLoaded += HandleSceneChange;
     }
 
     private void OnDisable()
@@ -52,6 +54,8 @@ public class AudioManager : MonoBehaviour
         GameEvents.OnSpeedChanged -= HandleSpeedAudio;
         GameEvents.OnPlayerDeath -= HandleDeath;
         GameEvents.OnRestartRequest -= HandleRestart;
+        GameEvents.OnPauseStateChanged -= HandlePause; 
+        SceneManager.sceneLoaded -= HandleSceneChange;
     }
 
     private void Start()
@@ -63,19 +67,22 @@ public class AudioManager : MonoBehaviour
     private void Update()
     {
 
+        UpdatePitchSlowMo();
+    }
+
+    private void UpdatePitchSlowMo()
+    {
         if (scaledSfxSource != null)
         {
             scaledSfxSource.pitch = Mathf.Clamp(Time.timeScale, 0.1f, 3f);
         }
 
-        // 2. Εφαρμογή του Time Scale ΣΥΝ την ταχύτητα τρεξίματος για τα βήματα
+        
         if (runLoopSource != null)
         {
             runLoopSource.pitch = Mathf.Clamp(_baseFootstepPitch * Time.timeScale, 0.1f, 3f);
         }
     }
-
-    // --- ΒΑΣΙΚΕΣ ΜΕΘΟΔΟΙ ΑΝΑΠΑΡΑΓΩΓΗΣ ---
 
     private void PlaySFX(SoundType requestedType)
     {
@@ -105,26 +112,11 @@ public class AudioManager : MonoBehaviour
                 sfxSource.PlayOneShot(clip, groupToPlay.Value.volume);    
             }
         }
-        else
-        {
-            Debug.LogWarning("Δεν βρέθηκε ήχος για το SoundType: " + requestedType);
-        }
     }
 
     private void PlayMusic(AudioClip track)
     {
-        // 1. Check if we are loading the main menu FIRST!
-        if (track == mainMenuMusic)
-        {
-            if (runLoopSource != null) runLoopSource.Stop();
-            
-            // Safety reset just in case you quit to the menu while the death screen was active
-            _playerIsDead = false; 
-        }
-
-        // 2. NOW check if the track is already playing to avoid restarting the song
-        if (musicSource.clip == track) return;
-        
+        if (musicSource.clip == track && musicSource.isPlaying) return;
         musicSource.clip = track;
         musicSource.Play();
     }
@@ -169,6 +161,27 @@ public class AudioManager : MonoBehaviour
         mainMixer.SetFloat("MusicPitch", 1.0f);
     }
 
-    private void HandleRestart()=>_playerIsDead = false;
+    private void HandleRestart()
+    {
+        _playerIsDead = false;
+        PlayMusic(mainMenuMusic);
+    }
+    
+
+    private void HandlePause(bool isPaused)
+    {
+        if (isPaused) runLoopSource.Pause();
+        else runLoopSource.UnPause();
+    }
+
+    private void HandleSceneChange(Scene scene, LoadSceneMode mode)
+    {
+        if (runLoopSource != null) runLoopSource.Stop();
+        if (scene.buildIndex == 0) // Assuming 0 is Main Menu
+        {
+            _playerIsDead = false;
+            PlayMusic(mainMenuMusic);
+        }
+    }
 
 }

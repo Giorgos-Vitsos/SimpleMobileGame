@@ -18,6 +18,7 @@ public class PlayerCollision : MonoBehaviour
         {
             if (_effects.IsInvincible)
             {
+                GameEvents.OnPlaySFX?.Invoke(SoundType.ObstacleBreak);
                 other.gameObject.SetActive(false);
                 return;
             }
