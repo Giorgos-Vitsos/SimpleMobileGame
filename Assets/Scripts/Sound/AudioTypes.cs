@@ -8,7 +8,8 @@ public enum SoundType
     ButtonClick,
     PlayerDeath,
     ButtonHover,
-    ObstacleBreak
+    ObstacleBreak,
+    PlayersBodyHit
 }
 
 [System.Serializable]

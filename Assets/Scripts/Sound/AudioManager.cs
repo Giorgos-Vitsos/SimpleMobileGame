@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class AudioManager : MonoBehaviour
 {
@@ -150,8 +151,16 @@ public class AudioManager : MonoBehaviour
 
 
         PlaySFX(SoundType.PlayerDeath);
+        StartCoroutine(PlayDelayedRoutine(SoundType.PlayersBodyHit, 1.5f));
 
         mainMixer.SetFloat("MusicPitch", 1.0f);
+    }
+
+    private IEnumerator PlayDelayedRoutine(SoundType type, float delay)
+    {
+        
+        yield return new WaitForSeconds(delay);
+        PlaySFX(type);
     }
 
     private void HandleRestart()
@@ -170,7 +179,7 @@ public class AudioManager : MonoBehaviour
     private void HandleSceneChange(Scene scene, LoadSceneMode mode)
     {
         if (runLoopSource != null) runLoopSource.Stop();
-        if (scene.buildIndex == 0) 
+        if (scene.buildIndex == 0)
         {
             _playerIsDead = false;
             PlayMusic(mainMenuMusic);
