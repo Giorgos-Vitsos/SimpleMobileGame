@@ -43,6 +43,7 @@ public class PlayerAnimator : MonoBehaviour
 
     private void TriggerDodge(int direction)
     {
+        GameEvents.OnPlaySFX?.Invoke(SoundType.Dodge);
         if (direction == -1)
         {
             _animator.SetTrigger("TurnL");

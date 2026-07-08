@@ -16,4 +16,10 @@ public static class GameEvents
     public static Action OnSaveRequest;
     public static Action<GameStateData> OnGatherSaveData;
     public static Action<GameStateData> OnRestoreSaveData;
+
+    public static Action<SoundType> OnPlaySFX;
+    
+    public static Action<AudioClip> OnPlayMusic; 
+    public static Action<float, float> OnSpeedChanged; 
+    
 }

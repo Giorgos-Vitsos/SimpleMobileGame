@@ -14,7 +14,9 @@ public class PlayerEffects : MonoBehaviour
     private bool _gamePaused=false;
     private float _lastEffectTime = -1f;
     private const float WARNING_TIME = 2f;
+    private const float MAX_SPEED = 50f;
     private bool _isWarningSent = false;
+    private bool _isDead=false;
 
     private void Awake()
     {
@@ -23,7 +25,8 @@ public class PlayerEffects : MonoBehaviour
 
     private void Update()
     {
-        if (_gamePaused) return;
+        if (_gamePaused || _isDead) return;
+        GameEvents.OnSpeedChanged?.Invoke(CurrentSpeed, MAX_SPEED);
         HandleEffects();
     }
 
@@ -32,6 +35,9 @@ public class PlayerEffects : MonoBehaviour
         GameEvents.OnPauseStateChanged+=StopEffects;
         GameEvents.OnGatherSaveData += InjectData;
         GameEvents.OnRestoreSaveData += RestoreData;
+        GameEvents.OnPlayerDeath+=HandleDeath;
+        GameEvents.OnRestartRequest+=HandleRespawn;
+
 
     }
 
@@ -40,6 +46,9 @@ public class PlayerEffects : MonoBehaviour
         GameEvents.OnPauseStateChanged-=StopEffects;
         GameEvents.OnGatherSaveData -= InjectData;
         GameEvents.OnRestoreSaveData -= RestoreData;
+        GameEvents.OnPlayerDeath-=HandleDeath;
+        GameEvents.OnRestartRequest-=HandleRespawn;
+
 
     }
 
@@ -192,5 +201,12 @@ public class PlayerEffects : MonoBehaviour
             default:
                 return null;
         }
+    }
+
+    private void HandleDeath()=>_isDead=true;
+    private void HandleRespawn()
+    {
+        _isDead=false;
+        _gamePaused=false;
     }
 }

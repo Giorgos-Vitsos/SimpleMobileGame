@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerCollision : MonoBehaviour
 {
     private PlayerEffects _effects;
+    [SerializeField]private bool GodMode;
 
     private void Awake()
     {
@@ -12,6 +13,7 @@ public class PlayerCollision : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if(GodMode)return;
         if (other.CompareTag("Obstacle"))
         {
             if (_effects.IsInvincible)
@@ -27,6 +29,7 @@ public class PlayerCollision : MonoBehaviour
             if (item != null)
             {
                 item.ApplyEffect(_effects);
+                GameEvents.OnPlaySFX?.Invoke(SoundType.PickupPowerup);
                 other.gameObject.SetActive(false);
             }
         }
