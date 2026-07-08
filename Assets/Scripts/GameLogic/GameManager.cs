@@ -137,4 +137,5 @@ public class GameManager : MonoBehaviour
         _firstTrack=data.firstTrack;
         GameEvents.OnScoreUpdated?.Invoke(_score);
     }
+
 }

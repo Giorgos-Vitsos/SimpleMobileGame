@@ -23,5 +23,7 @@ public static class GameEvents
     
     public static Action<AudioClip> OnPlayMusic; 
     public static Action<float, float> OnSpeedChanged; 
+
+    public static Action OnDeleteRequest;
     
 }

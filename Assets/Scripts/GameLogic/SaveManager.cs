@@ -44,6 +44,7 @@ public static class SaveManager
 
     public static void DeleteSave()
     {
+        Debug.Log("We entered Delete Save");
         if (SaveExists())
         {
             File.Delete(SaveFilePath);

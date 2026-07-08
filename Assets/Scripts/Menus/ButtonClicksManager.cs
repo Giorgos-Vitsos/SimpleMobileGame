@@ -48,4 +48,12 @@ public class ButtonClicksManager : MonoBehaviour
         PlayerPrefs.SetInt("ShouldLoadSave", 1);
         SceneManager.LoadScene("MainGame");
     }
+
+    public void Click_Delete()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+        SaveManager.DeleteSave();
+        Debug.Log("Delete was pressed");
+        GameEvents.OnDeleteRequest?.Invoke();
+    }
 }
