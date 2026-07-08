@@ -14,6 +14,8 @@ public static class GameEvents
     public static Action<int> OnPlayerDodge;
 
     public static Action OnSaveRequest;
+
+    public static Action OnLoadRequest;
     public static Action<GameStateData> OnGatherSaveData;
     public static Action<GameStateData> OnRestoreSaveData;
 

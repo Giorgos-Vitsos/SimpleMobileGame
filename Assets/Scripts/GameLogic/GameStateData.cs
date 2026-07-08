@@ -8,6 +8,7 @@ public class GameStateData
     public float playerZPosition;
     public float nextSpawnPos; 
     public int currentMaxObstaclesPerTrack;
+    public bool firstTrack;
 
     public float playerCurrentSpeed;
     public SavedEffectData activeEffect;

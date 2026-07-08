@@ -10,21 +10,20 @@ public class AudioManager : MonoBehaviour
     [Header("Mixer & Sources")]
     public AudioMixer mainMixer;
     public AudioSource musicSource;
-    public AudioSource sfxSource; 
-    public AudioSource scaledSfxSource; 
-    public AudioSource runLoopSource; 
+    public AudioSource sfxSource;
+    public AudioSource scaledSfxSource;
+    public AudioSource runLoopSource;
 
     [Header("Audio Library (Sound Bank)")]
     public AudioClip mainMenuMusic;
     public List<SoundGroup> sfxLibrary = new List<SoundGroup>();
 
     private float _baseFootstepPitch = 1f;
-    private bool _playerIsDead=false;
-    private bool _gamePaused=false;
+    private bool _playerIsDead = false;
 
     private void Awake()
     {
-        
+
         if (Instance == null)
         {
             Instance = this;
@@ -43,8 +42,9 @@ public class AudioManager : MonoBehaviour
         GameEvents.OnSpeedChanged += HandleSpeedAudio;
         GameEvents.OnPlayerDeath += HandleDeath;
         GameEvents.OnRestartRequest += HandleRestart;
-        GameEvents.OnPauseStateChanged += HandlePause; 
+        GameEvents.OnPauseStateChanged += HandlePause;
         SceneManager.sceneLoaded += HandleSceneChange;
+        GameEvents.OnLoadRequest += ResetAudioState;
     }
 
     private void OnDisable()
@@ -54,19 +54,19 @@ public class AudioManager : MonoBehaviour
         GameEvents.OnSpeedChanged -= HandleSpeedAudio;
         GameEvents.OnPlayerDeath -= HandleDeath;
         GameEvents.OnRestartRequest -= HandleRestart;
-        GameEvents.OnPauseStateChanged -= HandlePause; 
+        GameEvents.OnPauseStateChanged -= HandlePause;
+        GameEvents.OnLoadRequest -= ResetAudioState;
         SceneManager.sceneLoaded -= HandleSceneChange;
     }
 
     private void Start()
     {
-    
+
         PlayMusic(mainMenuMusic);
     }
 
     private void Update()
     {
-
         UpdatePitchSlowMo();
     }
 
@@ -77,7 +77,7 @@ public class AudioManager : MonoBehaviour
             scaledSfxSource.pitch = Mathf.Clamp(Time.timeScale, 0.1f, 3f);
         }
 
-        
+
         if (runLoopSource != null)
         {
             runLoopSource.pitch = Mathf.Clamp(_baseFootstepPitch * Time.timeScale, 0.1f, 3f);
@@ -87,7 +87,7 @@ public class AudioManager : MonoBehaviour
     private void PlaySFX(SoundType requestedType)
     {
         SoundGroup? groupToPlay = null;
-        
+
         foreach (SoundGroup group in sfxLibrary)
         {
             if (group.type == requestedType)
@@ -101,15 +101,15 @@ public class AudioManager : MonoBehaviour
         {
             int randomIndex = Random.Range(0, groupToPlay.Value.clips.Length);
             AudioClip clip = groupToPlay.Value.clips[randomIndex];
-            
+
 
             if (groupToPlay.Value.scalesWithTime)
             {
-                scaledSfxSource.PlayOneShot(clip, groupToPlay.Value.volume); 
+                scaledSfxSource.PlayOneShot(clip, groupToPlay.Value.volume);
             }
             else
             {
-                sfxSource.PlayOneShot(clip, groupToPlay.Value.volume);    
+                sfxSource.PlayOneShot(clip, groupToPlay.Value.volume);
             }
         }
     }
@@ -122,42 +122,35 @@ public class AudioManager : MonoBehaviour
     }
 
     private void HandleSpeedAudio(float currentSpeed, float maxSpeed)
-{
-    if (_playerIsDead) return;
-
-    float speedPercent = currentSpeed / maxSpeed;
-
-    // 1. MUSIC: Keeps the music locked to the game's progression
-    float musicPitch = Mathf.Lerp(1.0f, 1.3f, speedPercent);
-    mainMixer.SetFloat("MusicPitch", musicPitch);
-
-    // 2. FOOTSTEPS: Using a power curve to handle slow speeds better
-    // Raising speedPercent to 0.7f makes the pitch increase "slower" at the start,
-    // which prevents the "chipmunk" effect at low speeds.
-    float curve = Mathf.Pow(speedPercent, 1.2f);
-    _baseFootstepPitch = Mathf.Lerp(0.5f, 4f, curve); 
-
-    // Safety: ensure we don't play if speed is too low
-    if (currentSpeed <= 0.05f)
     {
-        if (runLoopSource.isPlaying) runLoopSource.Stop();
+        if (_playerIsDead) return;
+
+        float speedPercent = currentSpeed / maxSpeed;
+        float musicPitch = Mathf.Lerp(1.0f, 1.3f, speedPercent);
+        mainMixer.SetFloat("MusicPitch", musicPitch);
+
+        float curve = Mathf.Pow(speedPercent, 1.2f);
+        _baseFootstepPitch = Mathf.Lerp(0.5f, 4f, curve);
+
+        if (currentSpeed <= 0.05f)
+        {
+            if (runLoopSource.isPlaying) runLoopSource.Stop();
+        }
+        else if (!runLoopSource.isPlaying)
+        {
+            runLoopSource.Play();
+        }
     }
-    else if (!runLoopSource.isPlaying) 
-    {
-        runLoopSource.Play();
-    }
-}
 
     private void HandleDeath()
     {
-        _playerIsDead=true;
+        _playerIsDead = true;
         runLoopSource.Stop();
         musicSource.Stop();
-        
-        // Παίζουμε τον ήχο θανάτου
-        PlaySFX(SoundType.PlayerDeath); 
-        
-        // Επαναφέρουμε το Mixer pitch στο κανονικό για το επόμενο Run
+
+
+        PlaySFX(SoundType.PlayerDeath);
+
         mainMixer.SetFloat("MusicPitch", 1.0f);
     }
 
@@ -166,7 +159,7 @@ public class AudioManager : MonoBehaviour
         _playerIsDead = false;
         PlayMusic(mainMenuMusic);
     }
-    
+
 
     private void HandlePause(bool isPaused)
     {
@@ -177,11 +170,19 @@ public class AudioManager : MonoBehaviour
     private void HandleSceneChange(Scene scene, LoadSceneMode mode)
     {
         if (runLoopSource != null) runLoopSource.Stop();
-        if (scene.buildIndex == 0) // Assuming 0 is Main Menu
+        if (scene.buildIndex == 0) 
         {
             _playerIsDead = false;
             PlayMusic(mainMenuMusic);
         }
+    }
+
+    public void ResetAudioState()
+    {
+        if (runLoopSource != null) runLoopSource.Stop();
+        _playerIsDead = false;
+
+        mainMixer.SetFloat("MusicPitch", 1.0f);
     }
 
 }

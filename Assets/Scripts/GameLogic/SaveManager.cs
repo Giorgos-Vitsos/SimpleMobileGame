@@ -22,7 +22,7 @@ public static class SaveManager
 
     public static GameStateData LoadGameState()
     {
-        if (File.Exists(SaveFilePath))
+        if (SaveExists())
         {
             try 
             {
@@ -44,10 +44,12 @@ public static class SaveManager
 
     public static void DeleteSave()
     {
-        if (File.Exists(SaveFilePath))
+        if (SaveExists())
         {
             File.Delete(SaveFilePath);
             Debug.Log("Save file safely deleted.");
         }
     }
+
+    public static bool SaveExists()=>File.Exists(SaveFilePath);
 }

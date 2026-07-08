@@ -5,6 +5,7 @@ public class ButtonClicksManager : MonoBehaviour
 {
     public void Click_PlayGame()
     {
+         Debug.Log("Game is starting!");
         EventSystem.current.SetSelectedGameObject(null);
         SceneManager.LoadScene("MainGame");
     }
@@ -39,5 +40,12 @@ public class ButtonClicksManager : MonoBehaviour
         Debug.Log("Game is quitting!");
         EventSystem.current.SetSelectedGameObject(null);
         Application.Quit();
+    }
+
+    public void Click_Load()
+    {
+
+        PlayerPrefs.SetInt("ShouldLoadSave", 1);
+        SceneManager.LoadScene("MainGame");
     }
 }

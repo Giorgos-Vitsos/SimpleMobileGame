@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,7 +16,18 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        
         _playerEffects = FindAnyObjectByType<PlayerEffects>();
+    }
+
+    private void Start()
+    {
+        if (PlayerPrefs.GetInt("ShouldLoadSave", 0) == 1)
+        {
+            Debug.Log("BIKA");
+            PlayerPrefs.SetInt("ShouldLoadSave", 0);
+            GameEvents.OnLoadRequest?.Invoke();
+        }
     }
 
     private void OnEnable()
@@ -28,7 +38,8 @@ public class GameManager : MonoBehaviour
         GameEvents.OnPauseRequested += TogglePause;
         GameEvents.OnRestoreSaveData += RestoreData;
         GameEvents.OnGatherSaveData += InjectData;
-        GameEvents.OnSaveRequest+=HandleSaveGame;
+        GameEvents.OnSaveRequest += HandleSaveGame;
+        GameEvents.OnLoadRequest += HandleLoadGame;
     }
 
     private void OnDisable()
@@ -39,7 +50,8 @@ public class GameManager : MonoBehaviour
         GameEvents.OnPauseRequested -= TogglePause;
         GameEvents.OnRestoreSaveData -= RestoreData;
         GameEvents.OnGatherSaveData -= InjectData;
-        GameEvents.OnSaveRequest-=HandleSaveGame;
+        GameEvents.OnSaveRequest -= HandleSaveGame;
+        GameEvents.OnLoadRequest -= HandleLoadGame;
     }
 
     private void HandleTrackCleared()
@@ -60,16 +72,6 @@ public class GameManager : MonoBehaviour
                 _playerEffects.MultiplySpeed(difficultyMultiplier);
             }
             GameEvents.OnDifficultyIncreased?.Invoke(1);
-        }
-    }
-
-    void Update()
-    {
-        if (Keyboard.current == null) return;
-
-        if (Keyboard.current.lKey.wasPressedThisFrame)
-        {
-            HandleLoadGame();
         }
     }
 
@@ -112,11 +114,14 @@ public class GameManager : MonoBehaviour
         SaveManager.SaveGameState(snapshot);
     }
 
+
     private void HandleLoadGame()
     {
+
         GameStateData loadedData = SaveManager.LoadGameState();
         if (loadedData != null)
         {
+
             GameEvents.OnRestoreSaveData?.Invoke(loadedData);
         }
     }
@@ -124,10 +129,12 @@ public class GameManager : MonoBehaviour
     private void InjectData(GameStateData snapshot)
     {
         snapshot.currentScore = _score;
+        snapshot.firstTrack=_firstTrack;
     }
     private void RestoreData(GameStateData data)
     {
         _score = data.currentScore;
+        _firstTrack=data.firstTrack;
         GameEvents.OnScoreUpdated?.Invoke(_score);
     }
 }

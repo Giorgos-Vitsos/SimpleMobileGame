@@ -29,8 +29,8 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        if (scoreText != null) scoreText.text = "Score: 0";
-        if (finalScoreText != null) finalScoreText.text = "Score: 0";
+        if (scoreText != null) scoreText.text = $"Score: {_cachedScore}";
+        if (scoreText != null) scoreText.text = $"Score: {_cachedScore}";
     }
 
     private void Update()
@@ -57,7 +57,7 @@ public class UIManager : MonoBehaviour
     private void UpdateScoreDisplay(int newScore)
     {
         _cachedScore = newScore;
-
+        Debug.Log($"cached:  {_cachedScore}");
         if (scoreText != null)
         {
             scoreText.text = $"Score: {_cachedScore}";
