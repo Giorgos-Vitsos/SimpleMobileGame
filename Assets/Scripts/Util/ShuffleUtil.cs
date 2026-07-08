@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//shuffles the contents of a list (for better randomization)
 public static class ShuffleUtility
 {
     public static void Shuffle<T>(List<T> list)

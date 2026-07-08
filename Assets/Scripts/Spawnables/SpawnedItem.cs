@@ -19,6 +19,4 @@ public class SpawnedItem : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    
-
 }

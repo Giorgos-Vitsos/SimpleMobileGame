@@ -15,11 +15,12 @@ public class SpawnedPoolManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private SpawnedItem[] itemPrefabs;
 
-    private Dictionary<Track, List<SpawnedItem>> _trackItems = new();
-    private Dictionary<SpawnedItem, IObjectPool<SpawnedItem>> _objectPools = new();
+    private Dictionary<Track, List<SpawnedItem>> _trackItems = new();//stores items for each track
+    private Dictionary<SpawnedItem, IObjectPool<SpawnedItem>> _objectPools = new();//stores a pool for each item
+    //used for random spawns
     private List<SpawnedItem> _obstaclePrefabs = new();
     private List<SpawnedItem> _powerUpPrefabs = new();
-    private Dictionary<string, SpawnedItem> _prefabLookup = new();
+    private Dictionary<string, SpawnedItem> _prefabLookup = new();//faster lookups
 
     private int _currMaxObstaclesPerTrack;
 
@@ -27,12 +28,12 @@ public class SpawnedPoolManager : MonoBehaviour
     {
         _currMaxObstaclesPerTrack = initialMaxObstaclesPerTrack;
 
-        foreach (SpawnedItem prefab in itemPrefabs)
+        foreach (SpawnedItem prefab in itemPrefabs)//we create lookup table
         {
             _prefabLookup[prefab.name] = prefab;
         }
 
-        foreach (var prefab in itemPrefabs)
+        foreach (var prefab in itemPrefabs)//create pools and categorize
         {
             _objectPools[prefab] = new ObjectPool<SpawnedItem>(() => CreateItem(prefab), OnGet, OnRelease, OnDestroyItem, false, defaultCap, maxSize);
 

@@ -17,8 +17,8 @@ public class TrackPoolManager : MonoBehaviour
     [SerializeField] private SpawnedPoolManager itemManager;
 
     private IObjectPool<Track> _trackPool;
-    private Queue<Track> _activeTracks = new();
-    private float _spawnPos = 0;
+    private Queue<Track> _activeTracks = new();//tracks on scene
+    private float _spawnPos = 0;//next track spawn location
 
     private void Awake()
     {
@@ -35,7 +35,7 @@ public class TrackPoolManager : MonoBehaviour
         }
     }
 
-    private void SpawnNextTrack(bool isInitial)
+    private void SpawnNextTrack(bool isInitial)//true=starting track (no obstacles), false=normal tracks
     {
         Track newTrack = _trackPool.Get();
         newTrack.transform.position = new Vector3(0, 0, _spawnPos);
@@ -70,7 +70,7 @@ public class TrackPoolManager : MonoBehaviour
         Track oldestTrack = _activeTracks.Peek();
 
 
-        if (oldestTrack.transform.position.z + TrackLength / 2 + 2 < playerTransform.position.z)
+        if (oldestTrack.transform.position.z + TrackLength / 2 + 2 < playerTransform.position.z)//remove tracks behind player (/2 because track is scaled and +2 for padding)
         {
             itemManager.ClearItems(oldestTrack);
             _activeTracks.Dequeue();
@@ -78,7 +78,7 @@ public class TrackPoolManager : MonoBehaviour
 
             GameEvents.OnTrackCleared?.Invoke();
 
-            SpawnNextTrack(false);
+            SpawnNextTrack(false);//spawns next one
         }
     }
 
@@ -88,7 +88,7 @@ public class TrackPoolManager : MonoBehaviour
     private void InjectData(GameStateData snapshot)
     {
         snapshot.nextSpawnPos = _spawnPos;
-        foreach (Track track in _activeTracks)
+        foreach (Track track in _activeTracks)//we save all tracks positions
         {
             snapshot.trackZPositionsRounded.Add(Mathf.RoundToInt(track.transform.position.z));
         }
@@ -96,7 +96,7 @@ public class TrackPoolManager : MonoBehaviour
 
     private void RestoreData(GameStateData data)
     {
-        while (_activeTracks.Count > 0)
+        while (_activeTracks.Count > 0)//we clear current tracks
         {
             Track oldTrack = _activeTracks.Dequeue();
             itemManager.ClearItems(oldTrack);
@@ -105,14 +105,14 @@ public class TrackPoolManager : MonoBehaviour
 
         _spawnPos = data.nextSpawnPos;
 
-        foreach (int savedZRounded in data.trackZPositionsRounded)
+        foreach (int savedZRounded in data.trackZPositionsRounded)//we spawn the loaded ones
         {
             Track loadedTrack = _trackPool.Get();
             loadedTrack.transform.position = new Vector3(0, 0, savedZRounded);
             loadedTrack.SetupTrack();
             _activeTracks.Enqueue(loadedTrack);
 
-            SavedTrackItems savedItems = data.trackItems.Find(x => x.trackZPositionRounded == savedZRounded);
+            SavedTrackItems savedItems = data.trackItems.Find(x => x.trackZPositionRounded == savedZRounded);//restores items on the track
 
             if (savedItems != null)
             {
