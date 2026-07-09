@@ -168,7 +168,6 @@ public class AudioManager : MonoBehaviour
         PlayMusic(mainMenuMusic);
     }
 
-
     private void HandlePause(bool isPaused)
     {
         if (isPaused) runLoopSource.Pause();
