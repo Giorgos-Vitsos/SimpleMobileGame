@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,8 +15,7 @@ public class PlayerMovement : MonoBehaviour
     private CharacterController _controller;
     private PlayerEffects _effects;
     private Lane _currentLane = Lane.middle;
-    private float _lateralVelocity;
-    private bool _canMove = true;
+    private bool _canMove = true;//pause or death
 
     public enum Lane { left = -1, middle = 0, right = 1 }
 
@@ -32,8 +30,8 @@ public class PlayerMovement : MonoBehaviour
         moveLeftAction.action.performed += LeftAction;
         moveRightAction.action.performed += RightAction;
         GameEvents.OnPlayerDeath += DisableMovement;
-        GameEvents.OnPauseStateChanged +=SwitchStateMovement;
-        GameEvents.OnGatherSaveData+=InjectData;
+        GameEvents.OnPauseStateChanged += SwitchStateMovement;
+        GameEvents.OnGatherSaveData += InjectData;
         GameEvents.OnRestoreSaveData += RestoreData;
     }
 
@@ -43,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
         moveRightAction.action.performed -= RightAction;
         GameEvents.OnPlayerDeath -= DisableMovement;
         GameEvents.OnPauseStateChanged -= SwitchStateMovement;
-        GameEvents.OnGatherSaveData-=InjectData;
+        GameEvents.OnGatherSaveData -= InjectData;
         GameEvents.OnRestoreSaveData -= RestoreData;
     }
 
@@ -74,23 +72,23 @@ public class PlayerMovement : MonoBehaviour
 
         float targetXPosition = (int)_currentLane * laneDistance;
         float xDifference = targetXPosition - transform.position.x;
-        _lateralVelocity = xDifference * snappingForce;
-        
-        _controller.Move(new Vector3(_lateralVelocity,0f,_effects.CurrentSpeed)*Time.deltaTime);
+        float _lateralVelocity = xDifference * snappingForce;
+
+        _controller.Move(new Vector3(_lateralVelocity, 0f, _effects.CurrentSpeed) * Time.deltaTime);
     }
 
     private void DisableMovement() => _canMove = false;
-    private void SwitchStateMovement(bool state)=>_canMove=!state;
+    private void SwitchStateMovement(bool state) => _canMove = !state;
 
     private void InjectData(GameStateData snapshot)
     {
-        snapshot.currentLane=_currentLane;
-        snapshot.playerZPosition=transform.position.z;
+        snapshot.currentLane = _currentLane;
+        snapshot.playerZPosition = transform.position.z;
     }
 
     private void RestoreData(GameStateData data)
     {
-        _currentLane=data.currentLane;
+        _currentLane = data.currentLane;
         _controller.enabled = false;
         transform.position = new Vector3(0, 0, data.playerZPosition);
         _controller.enabled = true;

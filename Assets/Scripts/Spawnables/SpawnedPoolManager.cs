@@ -81,14 +81,14 @@ public class SpawnedPoolManager : MonoBehaviour
 
     public void Populate(Track track)
     {
-        var obstacleCount = 0;
-        var powerUpCount = 0;
-        List<SpawnedItem> currItems = new();
-        List<Transform> points = new(track.spawnPoints);
+        var obstacleCount = 0;//holds the num of obstacles in the track
+        var powerUpCount = 0;//it should be only 1
+        List<SpawnedItem> currItems = new();//all items in track
+        List<Transform> points = new(track.spawnPoints);//all possible spawn locations
 
-        ShuffleUtility.Shuffle(points);
+        ShuffleUtility.Shuffle(points);//we shuffle for better random result
 
-        Dictionary<Transform, int> obstaclesPerRow = new();
+        Dictionary<Transform, int> obstaclesPerRow = new();//we cant have more than 2 obstacles in each row otherwise the path gets blocked
 
         foreach (Transform point in points)
         {
@@ -117,7 +117,7 @@ public class SpawnedPoolManager : MonoBehaviour
                     itemToSpawn = GetRandItem(SpawnedItem.ItemType.Powerup);
                     if (itemToSpawn != null) powerUpCount++;
                 }
-                else
+                else//nothing to spawn
                 {
                     continue;
                 }
@@ -155,31 +155,31 @@ public class SpawnedPoolManager : MonoBehaviour
     private void InjectData(GameStateData snapshot)
     {
         snapshot.currentMaxObstaclesPerTrack = _currMaxObstaclesPerTrack;
-        foreach (KeyValuePair<Track, List<SpawnedItem>> entry in _trackItems)
+        foreach (KeyValuePair<Track, List<SpawnedItem>> entry in _trackItems)//saves all spawned items and their positions
         {
             Track track = entry.Key;
             List<SpawnedItem> items = entry.Value;
 
-            if (items.Count == 0) continue;
+            if (items.Count == 0) continue;//nothing to save
 
             SavedTrackItems savedItems = new();
-            savedItems.trackZPositionRounded = Mathf.RoundToInt(track.transform.position.z);
+            savedItems.trackZPositionRounded = Mathf.RoundToInt(track.transform.position.z);//each item remembers the track by its Z value
 
             foreach (SpawnedItem item in items)
             {
 
-                string prefabName = item.PrefabSource.name;
+                string prefabName = item.PrefabSource.name;//the type of item
 
                 int spawnIndex = -1;
-                for (int i = 0; i < track.spawnPoints.Length; i++)
+                for (int i = 0; i < track.spawnPoints.Length; i++)//finds which spawnpoint matches the one the items sits on
                 {
-                    if ((track.spawnPoints[i].position - item.transform.position).sqrMagnitude < 0.01f)
+                    if ((track.spawnPoints[i].position - item.transform.position).sqrMagnitude < 0.01f)//small errors
                     {
                         spawnIndex = i;
                         break;
                     }
                 }
-                if (!string.IsNullOrEmpty(prefabName) && spawnIndex != -1)
+                if (!string.IsNullOrEmpty(prefabName) && spawnIndex != -1)//we add the item
                 {
                     savedItems.itemPrefabNames.Add(prefabName);
                     savedItems.spawnPointIndices.Add(spawnIndex);
@@ -204,21 +204,13 @@ public class SpawnedPoolManager : MonoBehaviour
             string prefabName = savedItems.itemPrefabNames[i];
             int spawnIndex = savedItems.spawnPointIndices[i];
 
-            if (_prefabLookup.TryGetValue(prefabName, out SpawnedItem itemToSpawn))
+            if (_prefabLookup.TryGetValue(prefabName, out SpawnedItem itemToSpawn))//we match the name with the prefab
             {
-                SpawnedItem newItem = _objectPools[itemToSpawn].Get();
-                newItem.transform.position = track.spawnPoints[spawnIndex].position;
-                restoredItems.Add(newItem);
-            }
-
-            if (itemToSpawn != null)
-            {
-                SpawnedItem newItem = _objectPools[itemToSpawn].Get();
+                SpawnedItem newItem = _objectPools[itemToSpawn].Get();//we restore it
                 newItem.transform.position = track.spawnPoints[spawnIndex].position;
                 restoredItems.Add(newItem);
             }
         }
-
         _trackItems.Add(track, restoredItems);
     }
 }

@@ -119,15 +119,15 @@ public class CombinedEffect : StatusEffect
     public override SavedEffectData GetSaveData()
     {
         var data = new SavedEffectData { type = EffectType.Combined, remainingTime = remainingTime };
-        foreach (var effect in _effects)
+        foreach (var effect in _effects)//save each effect
         {
-            
+
             var rawData = effect.GetSaveData();
-            data.nestedEffects.Add(new SavedSubEffectData 
-            { 
-                type = rawData.type, 
-                remainingTime = rawData.remainingTime, 
-                floatParameter = rawData.floatParameter 
+            data.nestedEffects.Add(new SavedSubEffectData
+            {
+                type = rawData.type,
+                remainingTime = rawData.remainingTime,
+                floatParameter = rawData.floatParameter
             });
         }
         return data;

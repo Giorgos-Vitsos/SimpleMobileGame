@@ -9,17 +9,18 @@ public enum SoundType
     PlayerDeath,
     ButtonHover,
     ObstacleBreak,
-    PlayersBodyHit
+    PlayersBodyHit,
+    ScoreUp
 }
 
 [System.Serializable]
 public struct SoundGroup
 {
-    public string groupName; 
+    public string groupName;
     public SoundType type;
-    public AudioClip[] clips; 
-    
+    public AudioClip[] clips;
+
     [Range(0f, 1f)]
-    public float volume; 
+    public float volume;
     public bool scalesWithTime;
 }

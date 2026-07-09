@@ -1,17 +1,17 @@
 using UnityEngine;
-using System.IO; 
+using System.IO;
 using System;
 
 public static class SaveManager
 {
-    private static string SaveFilePath => Application.persistentDataPath + "/gamesave.json";
+    private static string SaveFilePath => Application.persistentDataPath + "/gamesave.json";//save file location
 
     public static void SaveGameState(GameStateData dataToSave)
     {
         try
         {
-            string jsonText = JsonUtility.ToJson(dataToSave, true);
-            File.WriteAllText(SaveFilePath, jsonText);
+            string jsonText = JsonUtility.ToJson(dataToSave, true);//converts data to json
+            File.WriteAllText(SaveFilePath, jsonText);//we try and write save file
             Debug.Log("Game successfully saved at: " + SaveFilePath);
         }
         catch (Exception e)
@@ -24,7 +24,7 @@ public static class SaveManager
     {
         if (SaveExists())
         {
-            try 
+            try
             {
                 string jsonText = File.ReadAllText(SaveFilePath);
                 GameStateData loadedData = JsonUtility.FromJson<GameStateData>(jsonText);
@@ -37,7 +37,7 @@ public static class SaveManager
                 return null;
             }
         }
-        
+
         Debug.LogWarning("No save file found at " + SaveFilePath);
         return null;
     }
@@ -52,5 +52,5 @@ public static class SaveManager
         }
     }
 
-    public static bool SaveExists()=>File.Exists(SaveFilePath);
+    public static bool SaveExists() => File.Exists(SaveFilePath);
 }

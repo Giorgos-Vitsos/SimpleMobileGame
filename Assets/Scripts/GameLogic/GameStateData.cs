@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 
-[System.Serializable] 
+[System.Serializable]
 public class GameStateData
 {
     public int currentScore;
-    public PlayerMovement.Lane currentLane; 
+    public PlayerMovement.Lane currentLane;
     public float playerZPosition;
-    public float nextSpawnPos; 
+    public float nextSpawnPos;
     public int currentMaxObstaclesPerTrack;
     public bool firstTrack;
 
@@ -22,10 +22,10 @@ public class GameStateData
 [System.Serializable]
 public class SavedTrackItems
 {
-    
-    public int trackZPositionRounded; 
-    public List<string> itemPrefabNames = new ();
-    public List<int> spawnPointIndices = new ();
+
+    public int trackZPositionRounded;
+    public List<string> itemPrefabNames = new();
+    public List<int> spawnPointIndices = new();
 }
 
 public enum EffectType { Shield, SlowMo, Speed, Combined }
@@ -36,12 +36,12 @@ public class SavedEffectData
     public EffectType type;
     public float remainingTime;
     public float floatParameter;
-    
-    public List<SavedSubEffectData> nestedEffects = new List<SavedSubEffectData>(); 
+
+    public List<SavedSubEffectData> nestedEffects = new List<SavedSubEffectData>();
 }
 
 [System.Serializable]
-public class SavedSubEffectData
+public class SavedSubEffectData//prevents bug where it thought it was stuck on a infinite loop
 {
     public EffectType type;
     public float remainingTime;

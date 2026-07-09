@@ -6,7 +6,7 @@ using System.Collections;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Instance;
+    public static AudioManager Instance;//signleton so sound persists
 
     [Header("Mixer & Sources")]
     public AudioMixer mainMixer;
@@ -15,7 +15,7 @@ public class AudioManager : MonoBehaviour
     public AudioSource scaledSfxSource;
     public AudioSource runLoopSource;
 
-    [Header("Audio Library (Sound Bank)")]
+    [Header("Audio Library")]
     public AudioClip mainMenuMusic;
     public List<SoundGroup> sfxLibrary = new List<SoundGroup>();
 
@@ -25,7 +25,7 @@ public class AudioManager : MonoBehaviour
     private void Awake()
     {
 
-        if (Instance == null)
+        if (Instance == null)//only one instance
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
@@ -62,7 +62,6 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-
         PlayMusic(mainMenuMusic);
     }
 
@@ -71,7 +70,7 @@ public class AudioManager : MonoBehaviour
         UpdatePitchSlowMo();
     }
 
-    private void UpdatePitchSlowMo()
+    private void UpdatePitchSlowMo()//changes pitch based on speed
     {
         if (scaledSfxSource != null)
         {
@@ -89,7 +88,7 @@ public class AudioManager : MonoBehaviour
     {
         SoundGroup? groupToPlay = null;
 
-        foreach (SoundGroup group in sfxLibrary)
+        foreach (SoundGroup group in sfxLibrary)//we search for group
         {
             if (group.type == requestedType)
             {
@@ -98,10 +97,10 @@ public class AudioManager : MonoBehaviour
             }
         }
 
-        if (groupToPlay != null && groupToPlay.Value.clips.Length > 0)
+        if (groupToPlay != null && groupToPlay.Value.clips.Length > 0)//if we found and contains good clip
         {
             int randomIndex = Random.Range(0, groupToPlay.Value.clips.Length);
-            AudioClip clip = groupToPlay.Value.clips[randomIndex];
+            AudioClip clip = groupToPlay.Value.clips[randomIndex];//get random clip
 
 
             if (groupToPlay.Value.scalesWithTime)
@@ -122,7 +121,7 @@ public class AudioManager : MonoBehaviour
         musicSource.Play();
     }
 
-    private void HandleSpeedAudio(float currentSpeed, float maxSpeed)
+    private void HandleSpeedAudio(float currentSpeed, float maxSpeed)//changes pitch based on audio
     {
         if (_playerIsDead) return;
 
@@ -130,7 +129,7 @@ public class AudioManager : MonoBehaviour
         float musicPitch = Mathf.Lerp(1.0f, 1.3f, speedPercent);
         mainMixer.SetFloat("MusicPitch", musicPitch);
 
-        float curve = Mathf.Pow(speedPercent, 1.2f);
+        float curve = Mathf.Pow(speedPercent, 1.2f);//starts slower and then gets more drastic
         _baseFootstepPitch = Mathf.Lerp(0.5f, 4f, curve);
 
         if (currentSpeed <= 0.05f)
@@ -145,20 +144,20 @@ public class AudioManager : MonoBehaviour
 
     private void HandleDeath()
     {
-        _playerIsDead = true;
+        _playerIsDead = true;//stops everything
         runLoopSource.Stop();
         musicSource.Stop();
 
 
-        PlaySFX(SoundType.PlayerDeath);
-        StartCoroutine(PlayDelayedRoutine(SoundType.PlayersBodyHit, 1.5f));
+        PlaySFX(SoundType.PlayerDeath);//death sound
+        StartCoroutine(PlayDelayedRoutine(SoundType.PlayersBodyHit, 1.5f));//body hitting the ground
 
-        mainMixer.SetFloat("MusicPitch", 1.0f);
+        mainMixer.SetFloat("MusicPitch", 1.0f);//reset for restart
     }
 
     private IEnumerator PlayDelayedRoutine(SoundType type, float delay)
     {
-        
+
         yield return new WaitForSeconds(delay);
         PlaySFX(type);
     }

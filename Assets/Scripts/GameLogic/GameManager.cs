@@ -11,20 +11,18 @@ public class GameManager : MonoBehaviour
     private int _score = 0;
     private PlayerEffects _playerEffects;
     private bool _gamePaused = false;
-    private float _prevTimeScale = 1;
+    private float _prevTimeScale = 1;//so it knows where to return
     private bool _firstTrack = true;
 
     private void Awake()
     {
-        
         _playerEffects = FindAnyObjectByType<PlayerEffects>();
     }
 
     private void Start()
     {
-        if (PlayerPrefs.GetInt("ShouldLoadSave", 0) == 1)
+        if (PlayerPrefs.GetInt("ShouldLoadSave", 0) == 1)//if load is pressed on main menu scene
         {
-            Debug.Log("BIKA");
             PlayerPrefs.SetInt("ShouldLoadSave", 0);
             GameEvents.OnLoadRequest?.Invoke();
         }
@@ -56,16 +54,22 @@ public class GameManager : MonoBehaviour
 
     private void HandleTrackCleared()
     {
-        if (_firstTrack)
+        if (_firstTrack)//first track dont count on score
         {
             _firstTrack = false;
             return;
         }
+
         _score++;
-
+        GameEvents.OnPlaySFX?.Invoke(SoundType.ScoreUp);
         GameEvents.OnScoreUpdated?.Invoke(_score);
+        IncreaseDifficulty();
 
-        if (_score % tracksUntilDifficultyIncrease == 0 && _score != 0)
+    }
+
+    private void IncreaseDifficulty()
+    {
+        if (_score % tracksUntilDifficultyIncrease == 0 && _score != 0)//we increase difficulty
         {
             if (_playerEffects != null)
             {
@@ -114,7 +118,6 @@ public class GameManager : MonoBehaviour
         SaveManager.SaveGameState(snapshot);
     }
 
-
     private void HandleLoadGame()
     {
 
@@ -129,13 +132,12 @@ public class GameManager : MonoBehaviour
     private void InjectData(GameStateData snapshot)
     {
         snapshot.currentScore = _score;
-        snapshot.firstTrack=_firstTrack;
+        snapshot.firstTrack = _firstTrack;
     }
     private void RestoreData(GameStateData data)
     {
         _score = data.currentScore;
-        _firstTrack=data.firstTrack;
+        _firstTrack = data.firstTrack;
         GameEvents.OnScoreUpdated?.Invoke(_score);
     }
-
 }

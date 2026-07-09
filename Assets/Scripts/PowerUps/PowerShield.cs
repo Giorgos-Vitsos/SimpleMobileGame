@@ -7,7 +7,7 @@ public class PowerShield : MonoBehaviour, IPowerUps
     [SerializeField] private Sprite icon;
     public void ApplyEffect(PlayerEffects player)
     {
-        ShieldEffect Paylod = new(effectDuration,icon);
+        ShieldEffect Paylod = new(effectDuration, icon);
         player.AddEffect(Paylod);
     }
 

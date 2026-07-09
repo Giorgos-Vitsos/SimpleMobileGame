@@ -1905,6 +1905,22 @@ MonoBehaviour:
     - {fileID: 8300000, guid: b32a44da2175d034183534582db8e89e, type: 3}
     volume: 1
     scalesWithTime: 1
+  - groupName: Fall
+    type: 7
+    clips:
+    - {fileID: 8300000, guid: 750fa91db9d923c46b3c4b64ce2b0fea, type: 3}
+    volume: 1
+    scalesWithTime: 0
+  - groupName: Score
+    type: 8
+    clips:
+    - {fileID: 8300000, guid: dff6d217c92ab2c4ab321a3bcaa724d5, type: 3}
+    - {fileID: 8300000, guid: 6fd38e31e5c13674a83906f22404e343, type: 3}
+    - {fileID: 8300000, guid: 5c118b7b49ad7b2469cdd4e81f6ac591, type: 3}
+    - {fileID: 8300000, guid: 3cedd0e9534008940a5526df2e35940f, type: 3}
+    - {fileID: 8300000, guid: 3e9fe6ae7a39f0a41a8ae30a39ba282d, type: 3}
+    volume: 0.4
+    scalesWithTime: 0
 --- !u!1001 &1532254655
 PrefabInstance:
   m_ObjectHideFlags: 0

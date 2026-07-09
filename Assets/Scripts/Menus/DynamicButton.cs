@@ -4,34 +4,33 @@ using TMPro;
 
 public class DynamicButton : MonoBehaviour
 {
+    [Header("Settings")]
     [SerializeField] private Button actionButton;
-    [SerializeField] private Button deleteButton; 
+    [SerializeField] private Button deleteButton;
     [SerializeField] private TextMeshProUGUI buttonText;
     [SerializeField] private ButtonClicksManager manager;
-    
+
     private bool _hasSaveFile;
 
     private void OnEnable()
     {
-        GameEvents.OnDeleteRequest+= ResetButtons;
+        GameEvents.OnDeleteRequest += ResetButtons;
     }
 
     private void OnDisable()
     {
-        GameEvents.OnDeleteRequest-= ResetButtons;
+        GameEvents.OnDeleteRequest -= ResetButtons;
     }
 
     private void Awake()
     {
-
         _hasSaveFile = SaveManager.SaveExists();
-
         UpdateButton();
     }
 
     private void UpdateButton()
     {
-        actionButton.onClick.RemoveAllListeners();
+        actionButton.onClick.RemoveAllListeners();//we remove old listeners to prevent dupes
         if (_hasSaveFile)
         {
             deleteButton.gameObject.SetActive(true);
@@ -48,9 +47,8 @@ public class DynamicButton : MonoBehaviour
 
     private void ResetButtons()
     {
-        _hasSaveFile=false;
+        _hasSaveFile = false;
         UpdateButton();
     }
-
 
 }

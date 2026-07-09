@@ -10,7 +10,6 @@ public class UIButtonAudio : MonoBehaviour, IPointerEnterHandler, IPointerClickH
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        // Ήχος όταν το πατάς
         GameEvents.OnPlaySFX?.Invoke(SoundType.ButtonClick);
     }
 }

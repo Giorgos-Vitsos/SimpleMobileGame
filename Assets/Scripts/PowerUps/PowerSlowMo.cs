@@ -11,7 +11,7 @@ public class PowerSlowMo : MonoBehaviour, IPowerUps
 
     public void ApplyEffect(PlayerEffects player)
     {
-        SlowMoEffect Paylod = new(effectDuration, slowDownTarget,icon);
+        SlowMoEffect Paylod = new(effectDuration, slowDownTarget, icon);
         player.AddEffect(Paylod);
     }
 }

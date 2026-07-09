@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 public class SpawnedItem : MonoBehaviour
 {
     [Header("Item type")]

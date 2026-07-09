@@ -1,16 +1,14 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.SceneManagement;
-using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour
 {
-    [Header("Death Screen UI (Game Over)")]
+    [Header("Death Screen UI")]
     [SerializeField] private Fade deathScreenFader;
     [SerializeField] private CanvasGroup deathScreenCanvasGroup;
     [SerializeField] private TextMeshProUGUI finalScoreText;
 
-    [Header("Pause Screen UI (Paused)")]
+    [Header("Pause Screen UI")]
     [SerializeField] private Fade pauseScreenFader;
     [SerializeField] private CanvasGroup pauseScreenCanvasGroup;
     [SerializeField] private TextMeshProUGUI pauseScoreText;
@@ -24,13 +22,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Image activeIcon;
     [SerializeField] private UnityEngine.UI.Image queueIcon;
 
-    private int _cachedScore = 0;
+    private int _cachedScore = 0;//latest score
     private bool _isFlashing = false;
 
     private void Start()
     {
         if (scoreText != null) scoreText.text = $"Score: {_cachedScore}";
-        if (scoreText != null) scoreText.text = $"Score: {_cachedScore}";
+        if (scoreText != null) finalScoreText.text = $"Score: {_cachedScore}";
     }
 
     private void Update()
@@ -43,7 +41,7 @@ public class UIManager : MonoBehaviour
         GameEvents.OnPlayerDeath += ShowDeathScreen;
         GameEvents.OnScoreUpdated += UpdateScoreDisplay;
         GameEvents.OnEffectsHUDUpdated += UpdateEffectsHUD;
-        GameEvents.OnPauseStateChanged+=HandlePauseMenu;
+        GameEvents.OnPauseStateChanged += HandlePauseMenu;
     }
 
     private void OnDisable()
@@ -51,13 +49,12 @@ public class UIManager : MonoBehaviour
         GameEvents.OnPlayerDeath -= ShowDeathScreen;
         GameEvents.OnScoreUpdated -= UpdateScoreDisplay;
         GameEvents.OnEffectsHUDUpdated -= UpdateEffectsHUD;
-        GameEvents.OnPauseStateChanged-=HandlePauseMenu;
+        GameEvents.OnPauseStateChanged -= HandlePauseMenu;
     }
 
     private void UpdateScoreDisplay(int newScore)
     {
         _cachedScore = newScore;
-        Debug.Log($"cached:  {_cachedScore}");
         if (scoreText != null)
         {
             scoreText.text = $"Score: {_cachedScore}";
@@ -108,7 +105,6 @@ public class UIManager : MonoBehaviour
 
     private void HidePauseScreen()
     {
-        DisableGameUI();
 
         if (pauseScreenCanvasGroup != null)
         {
@@ -176,11 +172,11 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    
+
 
     private void HandleIconFlashing()
     {
-        if (_isFlashing && activeIcon.sprite != null)
+        if (_isFlashing && activeIcon.sprite != null)//flash when timer ends
         {
             float wave = (Mathf.Sin(Time.unscaledTime * 15f) + 1f) / 2f;
             float alpha = Mathf.Lerp(0.2f, 1f, wave);

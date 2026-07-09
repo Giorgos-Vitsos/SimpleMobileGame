@@ -3,14 +3,15 @@ using UnityEngine;
 
 public class Fade : MonoBehaviour
 {
-    [SerializeField]private CanvasGroup canvas;
-    [SerializeField]private float fadeSpeed=2f;
+    [Header("Settings")]
+    [SerializeField] private CanvasGroup canvas;
+    [SerializeField] private float fadeSpeed = 2f;
 
-    private Coroutine _currentFadeCoroutine=null;
+    private Coroutine _currentFadeCoroutine = null;
 
     public enum FadeType
     {
-        In,Out
+        In, Out
     }
 
     public void TriggerFade(FadeType type)
@@ -19,7 +20,7 @@ public class Fade : MonoBehaviour
         {
             StopCoroutine(_currentFadeCoroutine);
         }
-        _currentFadeCoroutine=StartCoroutine(FadePlay(type));
+        _currentFadeCoroutine = StartCoroutine(FadePlay(type));
     }
     private IEnumerator FadePlay(FadeType type)
     {
@@ -28,15 +29,16 @@ public class Fade : MonoBehaviour
             while (canvas.alpha < 1f)
             {
                 canvas.alpha += fadeSpeed * Time.unscaledDeltaTime;
-                yield return null; 
+                yield return null;
             }
             canvas.alpha = 1f;
-        }else if(type == FadeType.Out)
+        }
+        else if (type == FadeType.Out)
         {
             while (canvas.alpha > 0f)
             {
                 canvas.alpha -= fadeSpeed * Time.unscaledDeltaTime;
-                yield return null; 
+                yield return null;
             }
             canvas.alpha = 0f;
         }

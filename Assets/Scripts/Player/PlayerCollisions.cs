@@ -3,8 +3,10 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerEffects))]
 public class PlayerCollision : MonoBehaviour
 {
+
+    [Header("Testing")]
+    [SerializeField] private bool GodMode;//for testing
     private PlayerEffects _effects;
-    [SerializeField]private bool GodMode;
 
     private void Awake()
     {
@@ -13,16 +15,16 @@ public class PlayerCollision : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(GodMode)return;
+        if (GodMode) return;
         if (other.CompareTag("Obstacle"))
         {
-            if (_effects.IsInvincible)
+            if (_effects.IsInvincible)//if we have shield
             {
-                GameEvents.OnPlaySFX?.Invoke(SoundType.ObstacleBreak);
+                GameEvents.OnPlaySFX?.Invoke(SoundType.ObstacleBreak);//destroy obstacle
                 other.gameObject.SetActive(false);
                 return;
             }
-            GameEvents.OnPlayerDeath?.Invoke(); 
+            GameEvents.OnPlayerDeath?.Invoke();//else die
         }
         else if (other.CompareTag("PowerUp"))
         {

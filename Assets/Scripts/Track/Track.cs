@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 public class Track : MonoBehaviour
 {
     [Header("Spawn Points Settings")]

@@ -5,7 +5,7 @@ public class ButtonClicksManager : MonoBehaviour
 {
     public void Click_PlayGame()
     {
-         Debug.Log("Game is starting!");
+        Debug.Log("Game is starting!");
         EventSystem.current.SetSelectedGameObject(null);
         SceneManager.LoadScene("MainGame");
     }
@@ -31,7 +31,7 @@ public class ButtonClicksManager : MonoBehaviour
     public void Click_MainMenu()
     {
         EventSystem.current.SetSelectedGameObject(null);
-        Time.timeScale=1f;
+        Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu");
     }
 

@@ -8,7 +8,7 @@ public class PlayerAnimator : MonoBehaviour
     private void Awake()
     {
         _animator = GetComponent<Animator>();
-        _playerEffects = GetComponentInParent<PlayerEffects>(); 
+        _playerEffects = GetComponentInParent<PlayerEffects>();
 
     }
 
@@ -23,19 +23,19 @@ public class PlayerAnimator : MonoBehaviour
     {
         GameEvents.OnPlayerDeath -= TriggerDeath;
         GameEvents.OnPlayerDodge -= TriggerDodge;
-        
+
     }
 
     private void Update()
     {
         HandleSpeed();
     }
-    
-    private void HandleSpeed()
+
+    private void HandleSpeed()//changes animation based on speed
     {
         if (_playerEffects != null)
         {
-            _animator.SetFloat("Speed",_playerEffects.CurrentSpeed);
+            _animator.SetFloat("Speed", _playerEffects.CurrentSpeed);
         }
     }
 
@@ -47,7 +47,8 @@ public class PlayerAnimator : MonoBehaviour
         if (direction == -1)
         {
             _animator.SetTrigger("TurnL");
-        }else if (direction == 1)
+        }
+        else if (direction == 1)
         {
             _animator.SetTrigger("TurnR");
         }

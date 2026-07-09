@@ -12,18 +12,13 @@ public static class GameEvents
     public static Action OnPauseRequested;
     public static Action<bool> OnPauseStateChanged;
     public static Action<int> OnPlayerDodge;
-
     public static Action OnSaveRequest;
-
     public static Action OnLoadRequest;
     public static Action<GameStateData> OnGatherSaveData;
     public static Action<GameStateData> OnRestoreSaveData;
-
     public static Action<SoundType> OnPlaySFX;
-    
-    public static Action<AudioClip> OnPlayMusic; 
-    public static Action<float, float> OnSpeedChanged; 
-
+    public static Action<AudioClip> OnPlayMusic;
+    public static Action<float, float> OnSpeedChanged;
     public static Action OnDeleteRequest;
-    
+
 }
