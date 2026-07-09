@@ -130,7 +130,7 @@ public class AudioManager : MonoBehaviour
         mainMixer.SetFloat("MusicPitch", musicPitch);
 
         float curve = Mathf.Pow(speedPercent, 1.2f);//starts slower and then gets more drastic
-        _baseFootstepPitch = Mathf.Lerp(0.5f, 4f, curve);
+        _baseFootstepPitch = Mathf.Lerp(0.3f, 4f, curve);
 
         if (currentSpeed <= 0.05f)
         {
