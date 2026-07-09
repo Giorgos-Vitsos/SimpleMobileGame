@@ -164,7 +164,7 @@ public class AudioManager : MonoBehaviour
 
     private void HandleRestart()
     {
-        _playerIsDead = false;
+        ResetAudioState();
         PlayMusic(mainMenuMusic);
     }
 
@@ -181,6 +181,7 @@ public class AudioManager : MonoBehaviour
         if (scene.buildIndex == 0)
         {
             _playerIsDead = false;
+            mainMixer.SetFloat("MusicPitch", 1.0f);
             PlayMusic(mainMenuMusic);
         }
     }
