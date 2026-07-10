@@ -52,7 +52,11 @@ public class PlayerEffects : MonoBehaviour
 
     public void ModifySpeed(float amount) => CurrentSpeed += amount;
 
-    public void MultiplySpeed(float multiplier) => CurrentSpeed *= multiplier;
+    public void MultiplySpeed(float multiplier)
+    {
+        if(CurrentSpeed*multiplier>MAX_SPEED)return;
+        CurrentSpeed*=multiplier;
+    }
 
     public void AddEffect(StatusEffect effect)
     {
